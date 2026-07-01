@@ -5,6 +5,7 @@
         ['route' => 'admin.dashboard', 'pattern' => 'admin.dashboard', 'icon' => 'dashboard', 'label' => 'Dashboard'],
         ['route' => 'admin.produk.index', 'pattern' => 'admin.produk.*', 'icon' => 'box', 'label' => 'Produk'],
         ['route' => 'admin.kategori.index', 'pattern' => 'admin.kategori.*', 'icon' => 'tag', 'label' => 'Kategori'],
+        ['route' => 'admin.pengguna.index', 'pattern' => 'admin.pengguna.*', 'icon' => 'users', 'label' => 'Pengguna'],
         ['route' => 'admin.settings.edit', 'pattern' => 'admin.settings.*', 'icon' => 'settings', 'label' => 'Pengaturan'],
     ];
 @endphp

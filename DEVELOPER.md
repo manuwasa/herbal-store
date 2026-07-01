@@ -25,7 +25,11 @@ Sebelum menambah kode apa pun, pahami batasan yang **disengaja**, bukan kelalaia
   di-self-host di `public/vendor/` dan `public/fonts/`. Kalau menambah library baru,
   download filenya dan commit ke repo — jangan `<script src="https://...">`.
 - **Satu role admin, tanpa RBAC.** Tidak ada level admin/staff/superadmin. Siapa pun
-  yang punya akun di tabel `users` bisa akses semua menu `/admin/*`.
+  yang punya akun di tabel `users` bisa akses semua menu `/admin/*`, termasuk menu
+  **Pengguna** yang dipakai untuk menambah/mengubah/menghapus akun admin lain — kalau
+  menambah fitur baru, jangan diam-diam menambahkan konsep role/permission di sini,
+  itu perubahan arsitektur besar (lihat catatan RBAC di `ROADMAP-MARKETPLACE.md` kalau
+  suatu saat benar-benar dibutuhkan).
 - **Reusable untuk niche lain.** Tidak ada yang hardcode "herbal" di luar konten —
   semua branding lewat `Setting`. Kalau menambah fitur, jaga agar tetap generik
   (lihat pola `Product`/`Category`/`Setting` yang sudah ada).
@@ -37,7 +41,12 @@ Sebelum menambah kode apa pun, pahami batasan yang **disengaja**, bukan kelalaia
 - jQuery + DataTables 2.x untuk tabel di panel admin saja (situs publik tidak pakai
   jQuery sama sekali — JS publik di `public/js/app.js` adalah vanilla JS murni).
 - Auth admin dibuat manual (`app/Http/Controllers/Auth/LoginController.php` + middleware
-  `auth` bawaan Laravel) — bukan Breeze/Fortify/Jetstream.
+  `auth` bawaan Laravel) — bukan Breeze/Fortify/Jetstream. Login dibatasi lewat rate
+  limiter bernama `login` yang didaftarkan di `AppServiceProvider::boot()`
+  (`RateLimiter::for('login', ...)`, key `email|ip`, 5 percobaan/menit) dan dipasang ke
+  route lewat middleware `throttle:login` di `routes/admin.php` — kalau menambah endpoint
+  auth lain (mis. reset password), ikuti pola pendaftaran limiter yang sama, jangan
+  andalkan `Auth::attempt()` saja tanpa throttle.
 - Tidak ada automated test suite yang berarti — `tests/` masih isi contoh default
   Laravel. Verifikasi selama ini dilakukan manual di browser (lihat bagian Verifikasi
   di bawah).
@@ -53,10 +62,12 @@ app/
       DashboardController.php   # halaman awal setelah login admin
       ProductController.php     # CRUD produk
       CategoryController.php    # CRUD kategori
+      UserController.php        # CRUD akun admin (menu Pengguna)
       SettingController.php     # form pengaturan tunggal (bukan CRUD, cuma edit)
     Auth/LoginController.php    # login/logout admin, tangan-buatan
+  Providers/AppServiceProvider.php  # daftar rate limiter `login` dipakai LoginController
   Models/
-    Product.php, Category.php, Setting.php
+    Product.php, Category.php, Setting.php, User.php
   Observers/ProductObserver.php # hapus file gambar lama saat produk diupdate/dihapus
   Services/WhatsAppLinkBuilder.php
 
@@ -117,6 +128,15 @@ sosial, tombol produk, dst).
 **Pola penting:** kalau menambah field konfigurasi baru untuk seluruh situs, tambahkan
 ke `Setting` (migration + `$fillable`), bukan bikin tabel/model konfigurasi baru.
 
+### `User`
+
+Model bawaan Laravel (`name`, `email` unique, `password` hashed), dipakai murni sebagai
+akun admin — tidak ada kolom role/level. Dikelola lewat `Admin\UserController` (menu
+**Pengguna**). `UserController::destroy()` menolak dua kondisi: menghapus akun yang
+sedang login sendiri, dan menghapus user terakhir yang tersisa (`User::count() <= 1`) —
+supaya panel admin tidak pernah kehilangan akses total. Kalau menambah aksi baru yang
+bisa mengurangi tabel `users` (mis. bulk delete), pertahankan kedua guard ini.
+
 ## Alur Publik
 
 `routes/web.php` → `HomeController@index` (banner + Top Pick slider + 8 produk
@@ -137,17 +157,22 @@ lalu di-`rawurlencode()` ke `https://wa.me/{nomor}?text=...`.
 
 ## Panel Admin
 
-`routes/admin.php`: grup `guest` untuk halaman login, grup `auth` + prefix `admin` +
-name prefix `admin.` untuk semua yang lain. `Route::resource('produk', ProductController::class)`
-dan `Route::resource('kategori', CategoryController::class)` — nama route pakai bahasa
-Indonesia (`admin.produk.index`, dst) lewat `->parameters(['produk' => 'product'])`
-supaya URL & nama route berbahasa Indonesia tapi tetap bind ke model `Product` (bukan
-`produk`) di controller.
+`routes/admin.php`: grup `guest` untuk halaman login (dengan middleware `throttle:login`
+di route POST-nya), grup `auth` + prefix `admin` + name prefix `admin.` untuk semua yang
+lain. `Route::resource('produk', ProductController::class)`,
+`Route::resource('kategori', CategoryController::class)`, dan
+`Route::resource('pengguna', UserController::class)` — nama route pakai bahasa Indonesia
+(`admin.produk.index`, `admin.pengguna.index`, dst) lewat
+`->parameters(['produk' => 'product'])` (dan setara untuk `kategori`/`pengguna`) supaya
+URL & nama route berbahasa Indonesia tapi tetap bind ke model asli (`Product`, `User`,
+dst) di controller.
 
-Semua tabel index (`admin/products/index.blade.php`, `admin/categories/index.blade.php`)
-pakai DataTables client-side (data dikirim penuh sekali render, difilter/disortir di
-browser — bukan server-side processing, karena skalanya kecil). Inisialisasinya di
-`public/js/admin.js`.
+Semua tabel index (`admin/products/index.blade.php`, `admin/categories/index.blade.php`,
+`admin/users/index.blade.php`) pakai DataTables client-side (data dikirim penuh sekali
+render, difilter/disortir di browser — bukan server-side processing, karena skalanya
+kecil). Inisialisasinya di `public/js/admin.js`, yang otomatis menangkap tabel manapun
+dengan id berakhiran `-table` — tabel baru cukup ikut konvensi id ini, tidak perlu
+mendaftarkan inisialisasi baru per tabel.
 
 `SettingController` **bukan** CRUD biasa — cuma `edit`/`update`, karena `Setting` selalu
 satu baris (`Setting::current()`). Upload gambar (logo/favicon/banner/placeholder produk)

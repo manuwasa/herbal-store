@@ -59,8 +59,12 @@ Konteks yang perlu dipahami sebelum menambah apa pun (lihat juga `README.md`):
   untuk semua konfigurasi situs — pola ini bisa dipakai lagi untuk menyimpan kredensial
   payment gateway & konfigurasi ongkir, bukan bikin sistem konfigurasi baru.
 - **Tidak ada akun pelanggan.** Tabel `users` isinya cuma admin (satu role, tanpa RBAC —
-  lihat `routes/admin.php`). Checkout nanti butuh cara menyimpan data pemesan meski
-  belum tentu ada sistem login pelanggan (lihat opsi guest checkout di bawah).
+  lihat `routes/admin.php`). Ada CRUD untuk mengelola *banyak* akun admin lewat menu
+  Pengguna (`Admin\UserController`), tapi semuanya tetap punya akses yang sama persis —
+  ini bukan RBAC, cuma multi-user. Kalau multi-vendor (Tahap 4) benar-benar dikerjakan,
+  konsep role/permission per akun harus dibangun baru, bukan diperluas dari sini.
+  Checkout nanti butuh cara menyimpan data pemesan meski belum tentu ada sistem login
+  pelanggan (lihat opsi guest checkout di bawah).
 - **Stack sengaja minimal**: tidak ada Vite/npm, semua CSS lewat Tailwind Standalone
   CLI, JS publik cuma vanilla di `public/js/app.js`. Kalau menambah payment gateway,
   sebagian besar vendor (Midtrans Snap, Xendit) menyediakan `<script>` yang biasanya

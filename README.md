@@ -16,7 +16,9 @@ serta `resources/views/catalog/`, tanpa perlu menyentuh data model atau panel ad
   karena melebihi batas ukuran file GitHub. Diunduh otomatis sekali ke `bin/tailwindcss.exe`
   lewat `composer run get-tailwindcss` (lihat langkah 5 di bawah).
 - jQuery + DataTables untuk tabel admin (self-hosted di `public/vendor/`, tidak lewat CDN).
-- Login admin dibuat manual (bukan Breeze) — tidak ada registrasi publik, akun admin dibuat lewat seeder/tinker.
+- Login admin dibuat manual (bukan Breeze) — tidak ada registrasi publik. Akun admin pertama
+  dibuat lewat seeder; akun tambahan dikelola dari panel admin sendiri (menu **Pengguna**).
+  Login dilindungi rate limiting (maksimal 5 percobaan/menit per kombinasi email+IP).
 
 ## Setup Lokal (Laragon)
 
@@ -27,7 +29,8 @@ serta `resources/views/catalog/`, tanpa perlu menyentuh data model atau panel ad
    - Email: `admin@herbalstore.test`
    - Password: `password`
 
-   **Ganti password ini sebelum deploy ke production.**
+   **Ganti password ini sebelum deploy ke production.** Bisa lewat menu **Pengguna** di
+   panel admin setelah login (edit akun ini, atau buat akun baru lalu hapus yang default).
 5. `composer run get-tailwindcss` — unduh sekali binary Tailwind CLI sesuai OS Anda ke
    `bin/tailwindcss.exe` (deteksi otomatis Windows/macOS/Linux, x64/arm64). Cuma perlu
    dijalankan sekali per komputer; kalau filenya sudah ada, perintah ini otomatis di-skip.
@@ -61,15 +64,16 @@ Lokal di atas), bukan lewat npm.
 
 ## Admin Panel
 
-`/admin/login` — kelola Produk, Kategori, dan Pengaturan (branding, banner, WhatsApp, kontak footer).
-Tidak ada role/level admin — siapa pun yang punya akun bisa akses semua menu.
+`/admin/login` — kelola Produk, Kategori, Pengguna (akun admin), dan Pengaturan (branding,
+banner, WhatsApp, kontak footer). Tidak ada role/level admin — siapa pun yang punya akun
+bisa akses semua menu, termasuk menu Pengguna itu sendiri.
 
 ## Dokumentasi Lengkap
 
 - **[DEVELOPER.md](DEVELOPER.md)** — dokumentasi teknis: arsitektur, struktur kode,
   konvensi, dan jebakan yang perlu diketahui sebelum menambah fitur. Untuk developer.
 - **[USER-GUIDE.md](USER-GUIDE.md)** — panduan pemakaian panel admin sehari-hari
-  (kelola Produk/Kategori/Pengaturan). Untuk pemilik toko, tidak perlu paham kode.
+  (kelola Produk/Kategori/Pengguna/Pengaturan). Untuk pemilik toko, tidak perlu paham kode.
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** — cara deploy ke production, baik shared hosting
   cPanel maupun VPS, sampai troubleshooting masalah umum setelah deploy.
 - **[ROADMAP-MARKETPLACE.md](ROADMAP-MARKETPLACE.md)** — peta jalan kalau situs ini

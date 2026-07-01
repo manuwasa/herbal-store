@@ -226,7 +226,10 @@ sudo ufw enable
    nilai `.env` yang lama karena sudah di-cache. Kalau lupa dan aplikasi berperilaku
    aneh setelah ganti `.env`, jalankan `php artisan config:clear` untuk reset dulu.
 2. **Ganti password admin default** — jangan biarkan `admin@herbalstore.test` /
-   `password` aktif di production. Lihat catatan di `USER-GUIDE.md` bagian Login.
+   `password` aktif di production. Login sekali dengan akun default, buat akun admin
+   baru lewat menu **Pengguna** di panel admin, lalu hapus akun default tersebut (lihat
+   langkah lengkapnya di `USER-GUIDE.md` bagian 4 — tidak butuh `tinker` atau akses
+   database langsung lagi).
 3. **Cek langsung di browser**: halaman depan tampil, gambar produk/logo/banner muncul
    (ini membuktikan `storage:link` berhasil), form login admin bisa dipakai, dan
    tombol WhatsApp/Shopee/TikTok mengarah ke tujuan yang benar.
@@ -257,3 +260,4 @@ tanpa styling terbaru kalau file CSS-nya tidak ikut ter-update di server.
 | Gambar produk/logo/banner tidak muncul (ikon rusak) | `php artisan storage:link` belum berhasil — cek apakah `public/storage` di server benar-benar berupa symlink (bukan folder kosong). Umum terjadi di shared hosting yang menonaktifkan `symlink()`. |
 | Perubahan `.env` tidak berefek | Konfigurasi sudah di-cache lewat `config:cache` sebelumnya — jalankan `php artisan config:clear` lalu `config:cache` lagi. |
 | Upload gambar gagal terus padahal file valid | Cek ekstensi PHP `gd` terpasang di server (dibutuhkan validasi rule `image`), dan cek `upload_max_filesize`/`post_max_size` di `php.ini` tidak lebih kecil dari batas yang divalidasi aplikasi (2MB untuk gambar produk/banner). |
+| Login admin menampilkan "Too Many Requests" / error 429 | Rate limiter bawaan (`throttle:login`, 5 percobaan/menit per kombinasi email+IP — lihat `DEVELOPER.md`) sedang aktif, biasanya karena salah password berulang kali. Normal, bukan bug — tunggu sekitar satu menit lalu coba lagi. |

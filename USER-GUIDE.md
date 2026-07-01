@@ -10,13 +10,19 @@ Buka `/admin/login` (mis. `https://tokoanda.com/admin/login`), masukkan email da
 password akun admin Anda.
 
 > **Penting:** akun admin default yang dibuat saat instalasi (`admin@herbalstore.test` /
-> `password`) **harus diganti** sebelum website benar-benar dipakai publik. Minta
-> developer Anda membuatkan akun baru lewat `php artisan tinker` atau menambah user
-> langsung di database, lalu hapus/nonaktifkan akun default tersebut.
+> `password`) **harus diganti** sebelum website benar-benar dipakai publik. Sekarang ini
+> bisa dilakukan sendiri tanpa developer, lewat menu **Pengguna** — lihat bagian 4 di
+> bawah untuk caranya.
+
+Kalau salah memasukkan password **5 kali dalam waktu 1 menit**, sistem akan menahan
+percobaan login berikutnya sebentar (pesan "Too Many Requests") sebagai proteksi dari
+tebak-tebak password oleh orang lain. Ini normal — tunggu sekitar satu menit lalu coba
+lagi dengan password yang benar.
 
 Setelah login, Anda akan masuk ke **Dashboard** — ringkasan jumlah produk dan kategori.
 Menu di sisi kiri (bisa diciutkan lewat ikon di pojok atas menu, dan otomatis jadi menu
-geser di HP): **Dashboard**, **Produk**, **Kategori**, **Pengaturan**, **Logout**.
+geser di HP): **Dashboard**, **Produk**, **Kategori**, **Pengguna**, **Pengaturan**,
+**Logout**.
 
 ## 2. Mengelola Produk
 
@@ -43,7 +49,7 @@ Klik tombol **Tambah Produk**, lalu isi:
 
 Tombol **Chat Admin (WhatsApp)** selalu muncul di setiap produk secara otomatis, tidak
 perlu diisi per produk — nomor dan template pesannya diatur satu kali di menu
-**Pengaturan** (lihat bagian 4).
+**Pengaturan** (lihat bagian 5).
 
 Klik **Simpan**. Untuk mengubah produk yang sudah ada, klik ikon pensil di baris
 produk tersebut pada tabel; untuk menghapus, klik ikon tempat sampah.
@@ -62,7 +68,42 @@ serta ikon edit/hapus per baris. Field-nya hanya **Nama Kategori** dan status
 katalog publik, tapi produk di dalamnya tetap ada — sembunyikan produknya satu-satu
 lewat "Aktifkan produk" kalau memang ingin disembunyikan juga).
 
-## 4. Pengaturan
+## 4. Mengelola Pengguna (Akun Admin)
+
+Menu **Pengguna** mengelola siapa saja yang bisa login ke panel admin ini. Semua akun di
+sini punya akses yang sama persis — tidak ada perbedaan "admin utama" vs "staf", semua
+bisa mengelola Produk/Kategori/Pengaturan/Pengguna lainnya.
+
+### Menambah pengguna baru
+
+Klik **Tambah Pengguna**, isi Nama, Email (harus unik, belum dipakai akun lain), Password,
+dan Konfirmasi Password, lalu **Simpan**.
+
+### Mengubah pengguna
+
+Klik ikon pensil pada baris pengguna yang dituju. Kolom **Password** dan **Konfirmasi
+Password** boleh dikosongkan kalau tidak ingin mengganti password — isi hanya kalau
+memang ingin menggantinya.
+
+### Menghapus pengguna
+
+Klik ikon tempat sampah pada baris pengguna. Dua hal yang **tidak diperbolehkan** sistem
+demi keamanan:
+- **Anda tidak bisa menghapus akun yang sedang Anda pakai untuk login saat ini** —
+  ikon hapusnya bahkan tidak akan muncul pada baris akun Anda sendiri.
+- **Pengguna terakhir yang tersisa tidak bisa dihapus** — supaya panel admin tidak
+  pernah kehilangan akses total tanpa ada satu akun pun yang bisa login.
+
+Untuk mengganti akun default (`admin@herbalstore.test`) dengan akun milik Anda sendiri:
+1. Login dengan akun default seperti biasa.
+2. Buka menu **Pengguna** → **Tambah Pengguna**, buat akun baru dengan email dan
+   password milik Anda.
+3. **Logout**, lalu login lagi memakai akun baru tersebut.
+4. Buka menu **Pengguna** lagi, lalu hapus akun `admin@herbalstore.test` — sekarang bisa
+   dihapus karena bukan lagi akun yang sedang Anda pakai, dan bukan lagi satu-satunya
+   akun yang ada.
+
+## 5. Pengaturan
 
 Menu **Pengaturan** adalah satu halaman untuk semua konfigurasi tampilan dan kontak
 situs — semua perubahan di sini langsung terlihat di halaman publik setelah disimpan,
@@ -94,7 +135,7 @@ muncul kalau URL-nya diisi. Kosongkan field yang tidak dipakai, jangan diisi tan
 atau semacamnya (field yang diisi teks apa pun akan dianggap "ada" dan tombolnya tetap
 muncul, tapi linknya tidak akan valid).
 
-## 5. Tips Praktis
+## 6. Tips Praktis
 
 - **Ukuran gambar**: logo dan favicon sebaiknya gambar persegi/landscape kecil (di
   bawah 1MB). Gambar banner dan produk boleh lebih besar (maksimal 2MB) tapi tetap
