@@ -11,9 +11,9 @@
         <link rel="icon" href="{{ asset('storage/' . $setting->favicon_path) }}">
     @endif
 
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
 </head>
-<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+<body class="min-h-screen flex flex-col bg-stone-50 text-stone-900">
     <x-navbar :setting="$setting" />
 
     <main class="flex-1">
@@ -22,6 +22,6 @@
 
     <x-footer :setting="$setting" />
 
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
 </body>
 </html>

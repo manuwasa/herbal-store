@@ -1,44 +1,69 @@
 @props(['setting'])
 
-<footer class="bg-white border-t border-gray-200 mt-12">
-    <div class="max-w-6xl mx-auto px-4 py-8 grid gap-6 sm:grid-cols-2">
+@php
+    $socials = [
+        ['url' => $setting->instagram_url, 'label' => 'Instagram'],
+        ['url' => $setting->facebook_url, 'label' => 'Facebook'],
+        ['url' => $setting->tiktok_profile_url, 'label' => 'TikTok'],
+        ['url' => $setting->youtube_url, 'label' => 'YouTube'],
+    ];
+@endphp
+
+<footer class="bg-brand-900 text-brand-100 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid gap-10 sm:grid-cols-3">
         <div>
-            <p class="font-semibold text-gray-900">{{ $setting->site_name }}</p>
+            <p class="font-display font-semibold text-lg text-white">{{ $setting->site_name }}</p>
             @if($setting->site_tagline)
-                <p class="text-sm text-gray-500 mt-1">{{ $setting->site_tagline }}</p>
+                <p class="text-sm text-brand-200 mt-2 leading-relaxed">{{ $setting->site_tagline }}</p>
             @endif
         </div>
 
-        <div class="text-sm text-gray-600 space-y-1 sm:text-right">
-            @if($setting->contact_email)
-                <p><a href="mailto:{{ $setting->contact_email }}" class="hover:text-brand-700">{{ $setting->contact_email }}</a></p>
-            @endif
-            @if($setting->contact_phone)
-                <p>{{ $setting->contact_phone }}</p>
-            @endif
-            @if($setting->contact_address)
-                <p>{{ $setting->contact_address }}</p>
-            @endif
-
-            <div class="flex gap-3 sm:justify-end pt-1">
-                @if($setting->instagram_url)
-                    <a href="{{ $setting->instagram_url }}" target="_blank" rel="noopener" class="hover:text-brand-700">Instagram</a>
-                @endif
-                @if($setting->facebook_url)
-                    <a href="{{ $setting->facebook_url }}" target="_blank" rel="noopener" class="hover:text-brand-700">Facebook</a>
-                @endif
-                @if($setting->tiktok_profile_url)
-                    <a href="{{ $setting->tiktok_profile_url }}" target="_blank" rel="noopener" class="hover:text-brand-700">TikTok</a>
-                @endif
-                @if($setting->youtube_url)
-                    <a href="{{ $setting->youtube_url }}" target="_blank" rel="noopener" class="hover:text-brand-700">YouTube</a>
-                @endif
+        @if($setting->contact_email || $setting->contact_phone || $setting->contact_address)
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-brand-300 mb-3">Kontak</p>
+                <div class="space-y-2.5 text-sm">
+                    @if($setting->contact_email)
+                        <a href="mailto:{{ $setting->contact_email }}" class="flex items-center gap-2 hover:text-white transition-colors">
+                            <x-icon name="mail" class="w-4 h-4 shrink-0 text-brand-400" />
+                            {{ $setting->contact_email }}
+                        </a>
+                    @endif
+                    @if($setting->contact_phone)
+                        <p class="flex items-center gap-2">
+                            <x-icon name="phone" class="w-4 h-4 shrink-0 text-brand-400" />
+                            {{ $setting->contact_phone }}
+                        </p>
+                    @endif
+                    @if($setting->contact_address)
+                        <p class="flex items-start gap-2">
+                            <x-icon name="map-pin" class="w-4 h-4 shrink-0 text-brand-400 mt-0.5" />
+                            <span>{{ $setting->contact_address }}</span>
+                        </p>
+                    @endif
+                </div>
             </div>
-        </div>
+        @endif
+
+        @if(collect($socials)->contains(fn ($s) => filled($s['url'])))
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-brand-300 mb-3">Ikuti Kami</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($socials as $social)
+                        @if($social['url'])
+                            <a href="{{ $social['url'] }}" target="_blank" rel="noopener"
+                               class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-brand-800 text-sm hover:bg-brand-700 hover:text-white transition-colors">
+                                {{ $social['label'] }}
+                                <x-icon name="arrow-top-right" class="w-3.5 h-3.5" />
+                            </a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 
     @if($setting->footer_text)
-        <div class="border-t border-gray-100 py-4 text-center text-xs text-gray-400">
+        <div class="border-t border-brand-800 py-4 text-center text-xs text-brand-300">
             {{ $setting->footer_text }}
         </div>
     @endif

@@ -53,9 +53,14 @@ Atau lewat Composer: `composer run build-css`. Tidak butuh `npm install` sama se
 `/admin/login` — kelola Produk, Kategori, dan Pengaturan (branding, banner, WhatsApp, kontak footer).
 Tidak ada role/level admin — siapa pun yang punya akun bisa akses semua menu.
 
-## Deploy ke Production
+## Dokumentasi Lengkap
 
-- Set `APP_DEBUG=false` dan `APP_ENV=production` di `.env`.
-- Set `APP_URL` ke domain sebenarnya.
-- Jalankan `php artisan storage:link` di server, dan `composer run build-css` jika ada perubahan CSS.
-- Ganti password admin default sebelum go-live.
+- **[DEVELOPER.md](DEVELOPER.md)** — dokumentasi teknis: arsitektur, struktur kode,
+  konvensi, dan jebakan yang perlu diketahui sebelum menambah fitur. Untuk developer.
+- **[USER-GUIDE.md](USER-GUIDE.md)** — panduan pemakaian panel admin sehari-hari
+  (kelola Produk/Kategori/Pengaturan). Untuk pemilik toko, tidak perlu paham kode.
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** — cara deploy ke production, baik shared hosting
+  cPanel maupun VPS, sampai troubleshooting masalah umum setelah deploy.
+- **[ROADMAP-MARKETPLACE.md](ROADMAP-MARKETPLACE.md)** — peta jalan kalau situs ini
+  nanti mau dikembangkan jadi toko online sungguhan (payment gateway, ongkir otomatis,
+  multi-vendor). Untuk pemilik toko maupun developer.

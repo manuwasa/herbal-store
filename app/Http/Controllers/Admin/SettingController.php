@@ -28,6 +28,7 @@ class SettingController extends Controller
             'footer_text' => ['nullable', 'string'],
             'banner_heading' => ['nullable', 'string', 'max:150'],
             'banner_subheading' => ['nullable', 'string', 'max:255'],
+            'banner_badge_text' => ['nullable', 'string', 'max:60'],
             'contact_email' => ['nullable', 'email'],
             'contact_phone' => ['nullable', 'string', 'max:30'],
             'contact_address' => ['nullable', 'string'],
@@ -38,9 +39,10 @@ class SettingController extends Controller
             'logo' => ['nullable', 'image', 'max:1024'],
             'favicon' => ['nullable', 'image', 'max:512'],
             'banner_image' => ['nullable', 'image', 'max:2048'],
+            'product_placeholder_image' => ['nullable', 'image', 'max:1024'],
         ]);
 
-        foreach (['logo', 'favicon', 'banner_image'] as $field) {
+        foreach (['logo', 'favicon', 'banner_image', 'product_placeholder_image'] as $field) {
             if ($request->hasFile($field)) {
                 $data["{$field}_path"] = $request->file($field)->store('settings', 'public');
             }

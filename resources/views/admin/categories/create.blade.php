@@ -1,5 +1,5 @@
 <x-layouts.admin :setting="\App\Models\Setting::current()" title="Tambah Kategori">
-    <div class="max-w-md">
+    <div class="max-w-md mx-auto">
         <a href="{{ route('admin.kategori.index') }}" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-4">
             &larr; Kembali ke daftar kategori
         </a>

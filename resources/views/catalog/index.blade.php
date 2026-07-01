@@ -1,12 +1,16 @@
 <x-layouts.app :setting="$setting" title="Katalog">
-    <div class="max-w-6xl mx-auto px-4 py-10">
-        <h1 class="text-2xl font-bold text-gray-900 mb-6">Katalog Produk</h1>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+        <p class="text-xs font-semibold uppercase tracking-wider text-brand-600 mb-1.5">Semua Produk</p>
+        <h1 class="font-display font-semibold text-3xl text-stone-900 mb-8">Katalog Produk</h1>
 
-        <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-8">
-            <input type="text" name="search" value="{{ $search }}" placeholder="Cari produk..."
-                   class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm">
+        <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-10">
+            <div class="relative flex-1">
+                <x-icon name="search" class="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                <input type="text" name="search" value="{{ $search }}" placeholder="Cari produk..."
+                       class="w-full border border-stone-300 rounded-full pl-11 pr-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+            </div>
 
-            <select name="category" class="border border-gray-300 rounded-lg px-4 py-2 text-sm">
+            <select name="category" class="border border-stone-300 rounded-full px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->slug }}" @selected($activeCategory === $category->slug)>
@@ -15,21 +19,24 @@
                 @endforeach
             </select>
 
-            <button type="submit" class="bg-brand-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-brand-700">
+            <button type="submit" class="bg-brand-700 text-white font-semibold px-7 py-2.5 rounded-full hover:bg-brand-800 transition-colors">
                 Filter
             </button>
         </form>
 
         @if($products->isEmpty())
-            <p class="text-gray-500">Tidak ada produk yang ditemukan.</p>
+            <div class="text-center py-20 text-stone-400">
+                <x-icon name="search" class="w-10 h-10 mx-auto mb-3" />
+                <p>Tidak ada produk yang ditemukan.</p>
+            </div>
         @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
                 @foreach($products as $product)
                     <x-product-card :product="$product" />
                 @endforeach
             </div>
 
-            <div class="mt-8">
+            <div class="mt-10">
                 {{ $products->links() }}
             </div>
         @endif

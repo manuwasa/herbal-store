@@ -6,18 +6,21 @@
     @endif
 
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-gray-200">
             <div class="flex items-center gap-2.5">
                 <span class="flex items-center justify-center w-9 h-9 rounded-lg bg-amber-100 text-amber-700">
                     <x-icon name="tag" class="w-5 h-5" />
                 </span>
                 <h2 class="font-semibold text-gray-900">Daftar Kategori</h2>
             </div>
-            <a href="{{ route('admin.kategori.create') }}"
-               class="inline-flex items-center gap-1.5 bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-brand-700">
-                <x-icon name="plus" class="w-4 h-4" />
-                Tambah Kategori
-            </a>
+            <div class="flex items-center gap-2">
+                <div id="categories-table-search-slot" class="flex-1 sm:flex-initial"></div>
+                <a href="{{ route('admin.kategori.create') }}"
+                   class="shrink-0 inline-flex items-center gap-1.5 bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-brand-700 whitespace-nowrap">
+                    <x-icon name="plus" class="w-4 h-4" />
+                    Tambah Kategori
+                </a>
+            </div>
         </div>
 
         <div class="p-5 overflow-x-auto">

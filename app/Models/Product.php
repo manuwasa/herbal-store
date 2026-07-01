@@ -27,6 +27,7 @@ class Product extends Model
         'tiktok_url',
         'order_now_url',
         'is_active',
+        'is_top_pick',
     ];
 
     protected function casts(): array
@@ -35,6 +36,7 @@ class Product extends Model
             'price' => 'decimal:2',
             'stock' => 'integer',
             'is_active' => 'boolean',
+            'is_top_pick' => 'boolean',
         ];
     }
 
@@ -46,6 +48,11 @@ class Product extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeTopPick(Builder $query): Builder
+    {
+        return $query->where('is_top_pick', true);
     }
 
     public function hasShopeeLink(): bool

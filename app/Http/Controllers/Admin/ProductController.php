@@ -84,6 +84,7 @@ class ProductController extends Controller
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_top_pick'] = $request->boolean('is_top_pick');
 
         return $data;
     }

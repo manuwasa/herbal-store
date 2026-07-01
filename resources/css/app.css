@@ -3,23 +3,57 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
-@source '../**/*.js';
+@source '../../public/js/*.js';
 
 @theme {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
 
-    /* Brand palette — the single place to re-theme this base for another site */
-    --color-brand-50: #f0fdf4;
-    --color-brand-100: #dcfce7;
-    --color-brand-200: #bbf7d0;
-    --color-brand-300: #86efac;
-    --color-brand-400: #4ade80;
-    --color-brand-500: #22c55e;
-    --color-brand-600: #16a34a;
-    --color-brand-700: #15803d;
-    --color-brand-800: #166534;
-    --color-brand-900: #14532d;
+    /* Brand palette — sage-to-forest green, the single place to re-theme this base
+       for another site. Deliberately muted/desaturated rather than a bright stock
+       green, to read as an apothecary/herbal identity rather than a generic UI. */
+    --color-brand-50: #f3f6ee;
+    --color-brand-100: #e3ead8;
+    --color-brand-200: #c8d6b3;
+    --color-brand-300: #a6bd88;
+    --color-brand-400: #84a361;
+    --color-brand-500: #688945;
+    --color-brand-600: #526f36;
+    --color-brand-700: #40592c;
+    --color-brand-800: #354824;
+    --color-brand-900: #2c3b1f;
+
+    /* WhatsApp's own brand green — kept distinct from --color-brand so the one
+       WhatsApp CTA reads as its recognizable semantic color, not our accent. */
+    --color-whatsapp: #25d366;
+    --color-whatsapp-dark: #1da851;
+}
+
+/* Fraunces, self-hosted (no font CDN) — a warm, optical-size variable serif
+   used sparingly for headings to give the storefront an apothecary character
+   instead of relying on system-ui for everything. Body copy stays system-ui
+   for speed and reliability. One variable font file serves all three weights. */
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/fonts/fraunces-variable.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/fonts/fraunces-variable.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/fonts/fraunces-variable.woff2') format('woff2');
 }
 
 @layer components {
@@ -42,44 +76,152 @@
         @apply hover:bg-red-50 hover:text-red-600;
     }
 
-    /* Restyle DataTables 2.x default markup to match the admin's Tailwind look */
-    .dt-container {
-        @apply text-sm;
+    /* File inputs — style the native picker button via Tailwind's file: variant
+       (targets ::file-selector-button) instead of a JS-driven fake uploader. */
+    .file-input {
+        @apply block w-full text-sm text-gray-500
+               file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+               file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700
+               hover:file:bg-brand-100 file:cursor-pointer cursor-pointer;
     }
-    .dt-container .dt-layout-row:first-child {
-        @apply mb-4;
+
+    /* Hides the scrollbar on a native horizontally-scrollable slider (the
+       top-pick carousel) without disabling scroll/touch/keyboard behavior. */
+    .no-scrollbar {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
-    .dt-container .dt-search {
-        @apply flex items-center gap-2;
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
     }
-    .dt-container .dt-search .dt-input {
-        @apply w-64 max-w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent;
+
+    /* Scroll-reveal: elements start hidden/offset, app.js adds .is-visible via
+       IntersectionObserver once the element enters the viewport. --reveal-delay
+       lets callers stagger a group of elements (e.g. a card grid) via inline style. */
+    .reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        transition-delay: var(--reveal-delay, 0ms);
     }
-    table.dataTable {
-        @apply w-full text-sm border-collapse;
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
     }
-    table.dataTable thead th {
-        @apply text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 px-4 py-3 border-b border-gray-200;
+
+    /* Same shape as .reveal but triggered immediately on page load (via
+       requestAnimationFrame in app.js) rather than on scroll, since hero content
+       is always above the fold. */
+    .hero-reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        transition-delay: var(--reveal-delay, 0ms);
     }
-    table.dataTable tbody td {
-        @apply px-4 py-3 border-b border-gray-100 align-middle;
+    .hero-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
     }
-    table.dataTable tbody tr:hover {
-        @apply bg-gray-50;
+
+    /* Very slow ambient drift on the hero's existing gradient background, so the
+       hero doesn't feel like a static screenshot. Only sets background-size/
+       -position, which the bg-linear-to-b utility doesn't touch. */
+    .hero-ambient-bg {
+        background-size: 200% 200%;
+        animation: hero-gradient-drift 18s ease-in-out infinite;
     }
-    .dt-container .dt-layout-row:last-child {
-        @apply flex items-center justify-between mt-4 text-sm text-gray-500;
+    @keyframes hero-gradient-drift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
     }
-    .dt-container .dt-info {
-        @apply text-gray-500;
+
+    /* Subtle "curated/live" pulse on the Top Pick star icon only — kept to a
+       single element so it reads as a small accent, not a busy page. */
+    .pulse-soft {
+        animation: pulse-soft 3s ease-in-out infinite;
     }
-    .dt-container .dt-paging .dt-paging-button {
-        @apply inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg text-gray-600 hover:bg-gray-100 cursor-pointer;
+    @keyframes pulse-soft {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.15); }
     }
-    .dt-container .dt-paging .dt-paging-button.current {
-        @apply bg-brand-600 text-white hover:bg-brand-600;
+}
+
+/* Reduced-motion: neutralize every animation/transition added above in one place,
+   plus the navbar shrink transition (toggled via real utility classes in app.js,
+   not a custom class — see the sidebar/DataTables note below for why). */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .hero-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
     }
-    .dt-container .dt-paging .dt-paging-button.disabled {
-        @apply text-gray-300 hover:bg-transparent cursor-not-allowed;
+    .hero-ambient-bg,
+    .pulse-soft {
+        animation: none;
     }
+    #site-header,
+    #site-header-inner {
+        transition: none !important;
+    }
+}
+
+/* Sidebar mobile-drawer / desktop-collapse state.
+   Deliberately NOT custom classes applied via @layer components: those lose
+   to plain Tailwind utility classes already sitting on the same element
+   (@layer utilities always outranks @layer components, regardless of
+   specificity — the exact same trap as the DataTables override above).
+   Instead admin.js toggles the real utility classes directly, so there is
+   nothing here to fight the cascade. This block intentionally left without
+   custom sidebar rules — see public/js/admin.js. */
+
+/* Restyle DataTables 2.x default markup to match the admin's Tailwind look.
+   Deliberately OUTSIDE @layer: DataTables' own stylesheet is unlayered, and
+   unlayered CSS always wins over any @layer'd rule regardless of specificity
+   or source order — so overrides here must also stay unlayered to compete.
+   The search box (.dt-search) is relocated by admin.js into a header slot
+   next to the "Tambah" button, so it's styled unscoped from .dt-container. */
+.dt-container {
+    @apply text-sm;
+}
+.dt-search {
+    @apply flex items-center gap-2 w-full sm:w-auto;
+}
+.dt-search .dt-input {
+    @apply w-full sm:w-56 max-w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent;
+}
+table.dataTable {
+    @apply w-full text-sm border-collapse;
+}
+table.dataTable thead th {
+    @apply text-center text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 px-4 py-3 border-b border-gray-200;
+}
+table.dataTable tbody td {
+    @apply px-4 py-3 border-b border-gray-100 align-middle text-center;
+}
+/* DataTables auto-detects numeric/date columns (price, stock) and right-aligns
+   them via its own CSS — override back to center. */
+table.dataTable th.dt-type-numeric,
+table.dataTable td.dt-type-numeric,
+table.dataTable th.dt-type-date,
+table.dataTable td.dt-type-date {
+    text-align: center;
+}
+table.dataTable tbody tr:hover {
+    @apply bg-gray-50;
+}
+.dt-container .dt-layout-row:last-child {
+    @apply flex items-center justify-between mt-4 text-sm text-gray-500;
+}
+.dt-container .dt-info {
+    @apply text-gray-500;
+}
+.dt-container .dt-paging .dt-paging-button {
+    @apply inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg text-gray-600 hover:bg-gray-100 cursor-pointer;
+}
+.dt-container .dt-paging .dt-paging-button.current {
+    @apply bg-brand-600 text-white hover:bg-brand-600;
+}
+.dt-container .dt-paging .dt-paging-button.disabled {
+    @apply text-gray-300 hover:bg-transparent cursor-not-allowed;
 }

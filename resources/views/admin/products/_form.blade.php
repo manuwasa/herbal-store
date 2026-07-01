@@ -41,7 +41,7 @@
         @if(!empty($product) && $product->image_path)
             <img src="{{ asset('storage/' . $product->image_path) }}" class="w-24 h-24 object-cover rounded-lg mb-2">
         @endif
-        <input type="file" name="image" accept="image/*" class="w-full text-sm">
+        <input type="file" name="image" accept="image/*" class="file-input">
     </div>
 
     <div class="border-t border-gray-200 pt-4">
@@ -69,6 +69,11 @@
     <label class="flex items-center gap-2 text-sm text-gray-700">
         <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $product->is_active ?? true))>
         Aktifkan produk (tampil di katalog)
+    </label>
+
+    <label class="flex items-center gap-2 text-sm text-gray-700">
+        <input type="checkbox" name="is_top_pick" value="1" @checked(old('is_top_pick', $product->is_top_pick ?? false))>
+        Tandai sebagai Top Pick (tampil di slider beranda)
     </label>
 
     <div>

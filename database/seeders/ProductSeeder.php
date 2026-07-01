@@ -23,6 +23,7 @@ class ProductSeeder extends Seeder
             'shopee_url' => 'https://shopee.co.id/product/123456/1000001',
             'tiktok_url' => 'https://www.tiktok.com/@tokoherbal/product/1000001',
             'order_now_url' => 'https://tokopedia.com/tokoherbal/jamu-kunyit-asam',
+            'is_top_pick' => true,
         ]);
 
         Product::factory()->create([
@@ -40,5 +41,8 @@ class ProductSeeder extends Seeder
             ->create([
                 'category_id' => fn () => $categories->random(),
             ]);
+
+        // Mark a handful more as Top Pick so the homepage slider has enough to scroll.
+        Product::query()->inRandomOrder()->take(5)->update(['is_top_pick' => true]);
     }
 }

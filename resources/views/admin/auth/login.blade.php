@@ -1,16 +1,21 @@
+@php $setting = \App\Models\Setting::current(); @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login Admin</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="w-full max-w-sm bg-white rounded-xl border border-gray-200 p-8">
         <div class="flex flex-col items-center text-center mb-6">
-            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 text-white mb-3">
-                <x-icon name="leaf" class="w-6 h-6" />
+            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 text-white mb-3 overflow-hidden">
+                @if($setting->logo_path)
+                    <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="{{ $setting->site_name }}" class="w-full h-full object-cover">
+                @else
+                    <x-icon name="leaf" class="w-6 h-6" />
+                @endif
             </span>
             <h1 class="text-xl font-bold text-gray-900">Login Admin</h1>
         </div>

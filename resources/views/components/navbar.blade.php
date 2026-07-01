@@ -1,17 +1,27 @@
 @props(['setting'])
 
-<header class="bg-white border-b border-gray-200 sticky top-0 z-20">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <a href="{{ route('home') }}" class="flex items-center gap-2 font-semibold text-lg text-brand-700">
+<header id="site-header" class="bg-stone-50/90 backdrop-blur-sm border-b border-stone-200 sticky top-0 z-20 transition-all duration-300">
+    <div id="site-header-inner" class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4 transition-all duration-300">
+        <a href="{{ route('home') }}" class="flex items-center gap-2.5">
             @if($setting->logo_path)
-                <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="{{ $setting->site_name }}" class="h-8 w-auto">
+                <img src="{{ asset('storage/' . $setting->logo_path) }}" alt="{{ $setting->site_name }}" class="h-9 w-auto">
+            @else
+                <span class="flex items-center justify-center w-9 h-9 rounded-full bg-brand-700 text-brand-50">
+                    <x-icon name="leaf" class="w-5 h-5" />
+                </span>
             @endif
-            <span>{{ $setting->site_name }}</span>
+            <span class="font-display font-semibold text-xl text-brand-900 tracking-tight">{{ $setting->site_name }}</span>
         </a>
 
-        <nav class="flex items-center gap-6 text-sm font-medium text-gray-600">
-            <a href="{{ route('home') }}" class="hover:text-brand-700">Beranda</a>
-            <a href="{{ route('catalog.index') }}" class="hover:text-brand-700">Katalog</a>
+        <nav class="flex items-center gap-1 text-sm font-medium text-stone-600">
+            <a href="{{ route('home') }}"
+               class="px-3 py-2 rounded-full transition-colors {{ request()->routeIs('home') ? 'bg-brand-100 text-brand-800' : 'hover:bg-stone-100 hover:text-brand-800' }}">
+                Beranda
+            </a>
+            <a href="{{ route('catalog.index') }}"
+               class="px-3 py-2 rounded-full transition-colors {{ request()->routeIs('catalog.*') ? 'bg-brand-100 text-brand-800' : 'hover:bg-stone-100 hover:text-brand-800' }}">
+                Katalog
+            </a>
         </nav>
     </div>
 </header>

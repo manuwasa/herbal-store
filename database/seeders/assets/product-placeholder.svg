@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#f3f6ee"/>
+  <circle cx="200" cy="170" r="70" fill="#e3ead8"/>
+  <path d="M200 120c-30 0-52 22-52 52 0 22 14 40 35 47-4-16 2-35 17-46 9-7 22-11 35-9-6-24-18-44-35-44z" fill="#84a361"/>
+  <text x="200" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#688945" text-anchor="middle">Foto Segera Hadir</text>
+</svg>

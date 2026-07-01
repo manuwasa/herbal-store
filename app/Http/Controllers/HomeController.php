@@ -14,6 +14,7 @@ class HomeController extends Controller
             'setting' => Setting::current(),
             'categories' => Category::query()->active()->orderBy('name')->get(),
             'featuredProducts' => Product::query()->active()->with('category')->latest()->take(8)->get(),
+            'topPicks' => Product::query()->active()->topPick()->with('category')->latest()->take(10)->get(),
         ]);
     }
 }

@@ -1,14 +1,15 @@
 <x-layouts.admin :setting="$setting" title="Pengaturan">
-    @if($errors->any())
-        <div class="mb-4 flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
-            <x-icon name="alert" class="w-5 h-5 shrink-0" />
-            {{ $errors->first() }}
-        </div>
-    @endif
+    <div class="max-w-2xl mx-auto">
+        @if($errors->any())
+            <div class="mb-4 flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+                <x-icon name="alert" class="w-5 h-5 shrink-0" />
+                {{ $errors->first() }}
+            </div>
+        @endif
 
-    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-8 max-w-2xl">
-        @csrf
-        @method('PUT')
+        <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
+            @csrf
+            @method('PUT')
 
         <section class="bg-white rounded-xl border border-gray-200 p-6">
             <h2 class="flex items-center gap-2 font-semibold text-gray-900 mb-4">
@@ -36,15 +37,23 @@
                         @if($setting->logo_path)
                             <img src="{{ asset('storage/' . $setting->logo_path) }}" class="h-10 mb-2">
                         @endif
-                        <input type="file" name="logo" accept="image/*" class="w-full text-sm">
+                        <input type="file" name="logo" accept="image/*" class="file-input">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Favicon</label>
                         @if($setting->favicon_path)
                             <img src="{{ asset('storage/' . $setting->favicon_path) }}" class="h-10 mb-2">
                         @endif
-                        <input type="file" name="favicon" accept="image/*" class="w-full text-sm">
+                        <input type="file" name="favicon" accept="image/*" class="file-input">
                     </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Gambar Default Produk (jika produk belum punya foto)</label>
+                    @if($setting->product_placeholder_image_path)
+                        <img src="{{ asset('storage/' . $setting->product_placeholder_image_path) }}" class="h-16 mb-2 rounded">
+                    @endif
+                    <input type="file" name="product_placeholder_image" accept="image/*" class="file-input">
+                    <p class="text-xs text-gray-400 mt-1">Kalau tidak diisi, produk tanpa foto akan menampilkan icon generik.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Teks Footer</label>
@@ -61,6 +70,13 @@
             </h2>
             <div class="grid gap-4">
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Teks Badge (opsional)</label>
+                    <input type="text" name="banner_badge_text" value="{{ old('banner_badge_text', $setting->banner_badge_text) }}"
+                           placeholder="mis. 100% Herbal Alami"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    <p class="text-xs text-gray-400 mt-1">Badge kecil di atas judul banner. Kosongkan untuk menyembunyikan.</p>
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Judul Banner</label>
                     <input type="text" name="banner_heading" value="{{ old('banner_heading', $setting->banner_heading) }}"
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
@@ -75,7 +91,7 @@
                     @if($setting->banner_image_path)
                         <img src="{{ asset('storage/' . $setting->banner_image_path) }}" class="h-16 mb-2 rounded">
                     @endif
-                    <input type="file" name="banner_image" accept="image/*" class="w-full text-sm">
+                    <input type="file" name="banner_image" accept="image/*" class="file-input">
                 </div>
             </div>
         </section>
@@ -149,5 +165,6 @@
             <x-icon name="check-circle" class="w-5 h-5" />
             Simpan Pengaturan
         </button>
-    </form>
+        </form>
+    </div>
 </x-layouts.admin>
