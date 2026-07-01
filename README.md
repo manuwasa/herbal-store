@@ -12,7 +12,9 @@ serta `resources/views/catalog/`, tanpa perlu menyentuh data model atau panel ad
 
 - Laravel 12 + PHP 8.2, MySQL
 - **Tidak ada Node.js/npm/Vite.** Tailwind CSS dikompilasi lewat [Tailwind Standalone CLI](https://tailwindcss.com/blog/standalone-cli)
-  (`bin/tailwindcss.exe`, sudah ada di repo — tidak perlu diinstal ulang).
+  — binary-nya (~100MB+, karena membundel runtime JS sendiri) **tidak disimpan di git**
+  karena melebihi batas ukuran file GitHub. Diunduh otomatis sekali ke `bin/tailwindcss.exe`
+  lewat `composer run get-tailwindcss` (lihat langkah 5 di bawah).
 - jQuery + DataTables untuk tabel admin (self-hosted di `public/vendor/`, tidak lewat CDN).
 - Login admin dibuat manual (bukan Breeze) — tidak ada registrasi publik, akun admin dibuat lewat seeder/tinker.
 
@@ -26,19 +28,28 @@ serta `resources/views/catalog/`, tanpa perlu menyentuh data model atau panel ad
    - Password: `password`
 
    **Ganti password ini sebelum deploy ke production.**
-5. `php artisan storage:link` — jika gagal (symlink butuh Developer Mode aktif di Windows), coba
+5. `composer run get-tailwindcss` — unduh sekali binary Tailwind CLI sesuai OS Anda ke
+   `bin/tailwindcss.exe` (deteksi otomatis Windows/macOS/Linux, x64/arm64). Cuma perlu
+   dijalankan sekali per komputer; kalau filenya sudah ada, perintah ini otomatis di-skip.
+   Kalau gagal (mis. tidak ada koneksi internet), instruksi unduh manual akan ditampilkan.
+6. `composer run build-css` untuk compile CSS pertama kali (lihat bagian di bawah).
+7. `php artisan storage:link` — jika gagal (symlink butuh Developer Mode aktif di Windows), coba
    `php artisan storage:link --relative`, atau jalankan terminal sebagai Administrator.
-6. Buka `http://herbal-store.test` (setelah reload Laragon) atau `php artisan serve`.
+8. Buka `http://herbal-store.test` (setelah reload Laragon) atau `php artisan serve`.
+
+Langkah 1–7 di atas juga bisa dijalankan sekaligus lewat `composer run setup`.
 
 ## Compile Ulang CSS
 
-Setiap kali menambah class Tailwind baru di file Blade, jalankan:
+Setiap kali menambah class Tailwind baru di file Blade (atau di `public/js/*.js`), jalankan:
 
 ```
 bin/tailwindcss.exe -i resources/css/app.css -o public/css/app.css --minify
 ```
 
-Atau lewat Composer: `composer run build-css`. Tidak butuh `npm install` sama sekali.
+Atau lewat Composer: `composer run build-css`. Tidak butuh `npm install` sama sekali —
+`bin/tailwindcss.exe` sendiri didapat lewat `composer run get-tailwindcss` (lihat Setup
+Lokal di atas), bukan lewat npm.
 
 ## Struktur Penting
 

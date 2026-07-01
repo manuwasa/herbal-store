@@ -15,8 +15,12 @@ Sebelum menambah kode apa pun, pahami batasan yang **disengaja**, bukan kelalaia
   fitur checkout/pembayaran, baca `ROADMAP-MARKETPLACE.md` dulu — itu perubahan
   arsitektur besar, bukan penambahan kecil.
 - **Tidak ada Node.js/npm/Vite di mana pun dalam proyek ini.** CSS dikompilasi lewat
-  Tailwind Standalone CLI (binary `bin/tailwindcss.exe`, sudah di-commit ke repo).
-  Jangan menambah `package.json` atau dependensi npm apa pun.
+  Tailwind Standalone CLI (binary `bin/tailwindcss.exe`). Binary ini **tidak** disimpan
+  di git (ukurannya 90-140MB tergantung platform — GitHub menolak file di atas 100MB),
+  melainkan diunduh sekali lewat `composer run get-tailwindcss`
+  (`bin/download-tailwindcss.php`, mendeteksi OS/arsitektur otomatis) — lihat
+  `README.md` bagian Setup Lokal. Jangan menambah `package.json` atau dependensi npm
+  apa pun.
 - **Tidak ada aset dari CDN.** jQuery, DataTables, dan font Fraunces semuanya
   di-self-host di `public/vendor/` dan `public/fonts/`. Kalau menambah library baru,
   download filenya dan commit ke repo — jangan `<script src="https://...">`.

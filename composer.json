@@ -37,7 +37,11 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
+            "@get-tailwindcss",
             "@build-css"
+        ],
+        "get-tailwindcss": [
+            "@php bin/download-tailwindcss.php"
         ],
         "build-css": [
             "bin/tailwindcss.exe -i resources/css/app.css -o public/css/app.css --minify"
