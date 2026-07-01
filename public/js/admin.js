@@ -3,5 +3,6 @@ $(function () {
     $('table[id$="-table"]').DataTable({
         pageLength: 10,
         lengthChange: false,
+        columnDefs: [{ targets: 'no-sort', orderable: false }],
     });
 });

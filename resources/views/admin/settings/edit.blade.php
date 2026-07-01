@@ -1,6 +1,7 @@
 <x-layouts.admin :setting="$setting" title="Pengaturan">
     @if($errors->any())
-        <div class="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-3 text-sm">
+        <div class="mb-4 flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+            <x-icon name="alert" class="w-5 h-5 shrink-0" />
             {{ $errors->first() }}
         </div>
     @endif
@@ -10,7 +11,10 @@
         @method('PUT')
 
         <section class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="font-semibold text-gray-900 mb-4">Branding</h2>
+            <h2 class="flex items-center gap-2 font-semibold text-gray-900 mb-4">
+                <x-icon name="leaf" class="w-5 h-5 text-brand-600" />
+                Branding
+            </h2>
             <div class="grid gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Website</label>
@@ -51,7 +55,10 @@
         </section>
 
         <section class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="font-semibold text-gray-900 mb-4">Banner Beranda</h2>
+            <h2 class="flex items-center gap-2 font-semibold text-gray-900 mb-4">
+                <x-icon name="megaphone" class="w-5 h-5 text-brand-600" />
+                Banner Beranda
+            </h2>
             <div class="grid gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Judul Banner</label>
@@ -74,7 +81,10 @@
         </section>
 
         <section class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="font-semibold text-gray-900 mb-4">Kontak & WhatsApp</h2>
+            <h2 class="flex items-center gap-2 font-semibold text-gray-900 mb-4">
+                <x-icon name="phone" class="w-5 h-5 text-brand-600" />
+                Kontak & WhatsApp
+            </h2>
             <div class="grid gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nomor WhatsApp Admin</label>
@@ -107,7 +117,10 @@
         </section>
 
         <section class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="font-semibold text-gray-900 mb-4">Sosial Media (Footer)</h2>
+            <h2 class="flex items-center gap-2 font-semibold text-gray-900 mb-4">
+                <x-icon name="tag" class="w-5 h-5 text-brand-600" />
+                Sosial Media (Footer)
+            </h2>
             <div class="grid gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Instagram URL</label>
@@ -132,7 +145,8 @@
             </div>
         </section>
 
-        <button type="submit" class="bg-brand-600 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-brand-700">
+        <button type="submit" class="inline-flex items-center gap-2 bg-brand-600 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-brand-700">
+            <x-icon name="check-circle" class="w-5 h-5" />
             Simpan Pengaturan
         </button>
     </form>

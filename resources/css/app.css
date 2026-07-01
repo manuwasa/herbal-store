@@ -21,3 +21,65 @@
     --color-brand-800: #166534;
     --color-brand-900: #14532d;
 }
+
+@layer components {
+    /* Status/count badges used across admin tables */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+    }
+    .badge-active {
+        @apply bg-green-100 text-green-700;
+    }
+    .badge-inactive {
+        @apply bg-gray-100 text-gray-500;
+    }
+
+    /* Icon-only row action buttons (edit/delete) */
+    .icon-btn {
+        @apply inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors;
+    }
+    .icon-btn-danger {
+        @apply hover:bg-red-50 hover:text-red-600;
+    }
+
+    /* Restyle DataTables 2.x default markup to match the admin's Tailwind look */
+    .dt-container {
+        @apply text-sm;
+    }
+    .dt-container .dt-layout-row:first-child {
+        @apply mb-4;
+    }
+    .dt-container .dt-search {
+        @apply flex items-center gap-2;
+    }
+    .dt-container .dt-search .dt-input {
+        @apply w-64 max-w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent;
+    }
+    table.dataTable {
+        @apply w-full text-sm border-collapse;
+    }
+    table.dataTable thead th {
+        @apply text-left text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 px-4 py-3 border-b border-gray-200;
+    }
+    table.dataTable tbody td {
+        @apply px-4 py-3 border-b border-gray-100 align-middle;
+    }
+    table.dataTable tbody tr:hover {
+        @apply bg-gray-50;
+    }
+    .dt-container .dt-layout-row:last-child {
+        @apply flex items-center justify-between mt-4 text-sm text-gray-500;
+    }
+    .dt-container .dt-info {
+        @apply text-gray-500;
+    }
+    .dt-container .dt-paging .dt-paging-button {
+        @apply inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-lg text-gray-600 hover:bg-gray-100 cursor-pointer;
+    }
+    .dt-container .dt-paging .dt-paging-button.current {
+        @apply bg-brand-600 text-white hover:bg-brand-600;
+    }
+    .dt-container .dt-paging .dt-paging-button.disabled {
+        @apply text-gray-300 hover:bg-transparent cursor-not-allowed;
+    }
+}

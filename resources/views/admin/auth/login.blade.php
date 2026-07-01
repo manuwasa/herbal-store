@@ -8,10 +8,16 @@
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="w-full max-w-sm bg-white rounded-xl border border-gray-200 p-8">
-        <h1 class="text-xl font-bold text-gray-900 mb-6">Login Admin</h1>
+        <div class="flex flex-col items-center text-center mb-6">
+            <span class="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 text-white mb-3">
+                <x-icon name="leaf" class="w-6 h-6" />
+            </span>
+            <h1 class="text-xl font-bold text-gray-900">Login Admin</h1>
+        </div>
 
         @if ($errors->any())
-            <div class="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-3 text-sm">
+            <div class="mb-4 flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+                <x-icon name="alert" class="w-5 h-5 shrink-0" />
                 {{ $errors->first() }}
             </div>
         @endif
