@@ -1,59 +1,61 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Herbal Store
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website katalog produk herbal. Bukan e-commerce — setiap produk punya sampai 4 tombol aksi
+(Shopee, TikTok, Order Now, Chat Admin WhatsApp) yang mengarahkan pembeli ke channel eksternal.
+Tidak ada keranjang, checkout, atau pembayaran di website ini.
 
-## About Laravel
+Dibangun agar mudah dipakai ulang untuk katalog produk lain — cukup ganti konten di halaman
+**Pengaturan** (nama, logo, favicon, banner, kontak) dan sesuaikan tampilan di `resources/views/home.blade.php`
+serta `resources/views/catalog/`, tanpa perlu menyentuh data model atau panel admin.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Laravel 12 + PHP 8.2, MySQL
+- **Tidak ada Node.js/npm/Vite.** Tailwind CSS dikompilasi lewat [Tailwind Standalone CLI](https://tailwindcss.com/blog/standalone-cli)
+  (`bin/tailwindcss.exe`, sudah ada di repo — tidak perlu diinstal ulang).
+- jQuery + DataTables untuk tabel admin (self-hosted di `public/vendor/`, tidak lewat CDN).
+- Login admin dibuat manual (bukan Breeze) — tidak ada registrasi publik, akun admin dibuat lewat seeder/tinker.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Setup Lokal (Laragon)
 
-## Learning Laravel
+1. `composer install`
+2. Copy `.env.example` ke `.env`, sesuaikan `DB_DATABASE` jika perlu, lalu `php artisan key:generate`.
+3. Buat database MySQL `herbal_store` (lewat HeidiSQL/phpMyAdmin bawaan Laragon, atau `mysql -u root -e "CREATE DATABASE herbal_store"`).
+4. `php artisan migrate --seed` — akan membuat 1 akun admin default:
+   - Email: `admin@herbalstore.test`
+   - Password: `password`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+   **Ganti password ini sebelum deploy ke production.**
+5. `php artisan storage:link` — jika gagal (symlink butuh Developer Mode aktif di Windows), coba
+   `php artisan storage:link --relative`, atau jalankan terminal sebagai Administrator.
+6. Buka `http://herbal-store.test` (setelah reload Laragon) atau `php artisan serve`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Compile Ulang CSS
 
-## Laravel Sponsors
+Setiap kali menambah class Tailwind baru di file Blade, jalankan:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+bin/tailwindcss.exe -i resources/css/app.css -o public/css/app.css --minify
+```
 
-### Premium Partners
+Atau lewat Composer: `composer run build-css`. Tidak butuh `npm install` sama sekali.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Struktur Penting
 
-## Contributing
+- `resources/views/components/action-buttons.blade.php` — 4 tombol order (Shopee/TikTok/Order Now/WhatsApp),
+  dipakai bareng di card katalog dan halaman detail produk.
+- `app/Services/WhatsAppLinkBuilder.php` — bikin link `wa.me` dari nomor & template pesan di Pengaturan.
+- `app/Models/Setting.php` — satu baris data (`Setting::current()`) untuk semua branding, banner, dan kontak footer.
+- `routes/admin.php` — semua route `/admin/*`, dilindungi middleware `auth` bawaan Laravel.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Admin Panel
 
-## Code of Conduct
+`/admin/login` — kelola Produk, Kategori, dan Pengaturan (branding, banner, WhatsApp, kontak footer).
+Tidak ada role/level admin — siapa pun yang punya akun bisa akses semua menu.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Deploy ke Production
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Set `APP_DEBUG=false` dan `APP_ENV=production` di `.env`.
+- Set `APP_URL` ke domain sebenarnya.
+- Jalankan `php artisan storage:link` di server, dan `composer run build-css` jika ada perubahan CSS.
+- Ganti password admin default sebelum go-live.
