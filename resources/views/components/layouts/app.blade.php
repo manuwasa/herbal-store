@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? $setting->site_name }} @if(!empty($title)) &mdash; {{ $setting->site_name }} @endif</title>
+    <title>{{ empty($title) ? $setting->site_name : "{$title} — {$setting->site_name}" }}</title>
     <meta name="description" content="{{ $description ?? $setting->site_description }}">
 
     @if($setting->favicon_path)
