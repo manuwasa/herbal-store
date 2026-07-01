@@ -1,0 +1,27 @@
+@props(['setting', 'title' => null, 'description' => null])
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title ?? $setting->site_name }} @if(!empty($title)) &mdash; {{ $setting->site_name }} @endif</title>
+    <meta name="description" content="{{ $description ?? $setting->site_description }}">
+
+    @if($setting->favicon_path)
+        <link rel="icon" href="{{ asset('storage/' . $setting->favicon_path) }}">
+    @endif
+
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+    <x-navbar :setting="$setting" />
+
+    <main class="flex-1">
+        {{ $slot }}
+    </main>
+
+    <x-footer :setting="$setting" />
+
+    <script src="{{ asset('js/app.js') }}"></script>
+</body>
+</html>
