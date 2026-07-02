@@ -26,7 +26,7 @@
                 <h1 class="font-display font-semibold text-3xl text-stone-900 mt-2 text-balance">{{ $product->name }}</h1>
                 <p class="text-3xl font-bold text-stone-900 mt-4">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
 
-                @if($product->stock <= 0)
+                @if($product->totalStock() <= 0)
                     <span class="badge bg-red-100 text-red-700 mt-3">Stok Habis</span>
                 @endif
 

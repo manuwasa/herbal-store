@@ -23,5 +23,6 @@
     <x-footer :setting="$setting" />
 
     <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
+    @stack('scripts')
 </body>
 </html>

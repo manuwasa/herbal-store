@@ -76,7 +76,7 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
+            'weight' => ['required', 'integer', 'min:1'], // grams — required so shipping is never undercharged
             'shopee_url' => ['nullable', 'url'],
             'tiktok_url' => ['nullable', 'url'],
             'order_now_url' => ['nullable', 'url'],

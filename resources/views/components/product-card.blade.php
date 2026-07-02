@@ -15,7 +15,7 @@
             </div>
         @endif
 
-        @if($product->stock <= 0)
+        @if($product->totalStock() <= 0)
             <span class="absolute top-2.5 left-2.5 badge bg-stone-900/80 text-white backdrop-blur-sm">Stok Habis</span>
         @endif
     </a>

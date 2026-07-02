@@ -1,12 +1,17 @@
 # Herbal Store
 
-Website katalog produk herbal. Bukan e-commerce — setiap produk punya sampai 4 tombol aksi
-(Shopee, TikTok, Order Now, Chat Admin WhatsApp) yang mengarahkan pembeli ke channel eksternal.
-Tidak ada keranjang, checkout, atau pembayaran di website ini.
+Website toko herbal dengan katalog **dan** marketplace penuh: setiap produk punya tombol aksi
+eksternal (Shopee, TikTok, Order Now, Chat Admin WhatsApp) **dan** keranjang + checkout internal
+dengan pembayaran online (Midtrans), ongkir otomatis (Biteship), stok multi-cabang, peran admin
+(Pemilik / Staf Cabang), serta laporan penjualan.
 
-Dibangun agar mudah dipakai ulang untuk katalog produk lain — cukup ganti konten di halaman
-**Pengaturan** (nama, logo, favicon, banner, kontak) dan sesuaikan tampilan di `resources/views/home.blade.php`
-serta `resources/views/catalog/`, tanpa perlu menyentuh data model atau panel admin.
+> **Catatan sejarah:** proyek ini bermula sebagai katalog murni "link keluar" tanpa cart/checkout.
+> Fitur marketplace ditambahkan kemudian (lihat `ROADMAP-MARKETPLACE.md`). Tombol eksternal
+> Shopee/TikTok/WhatsApp tetap ada, berdampingan dengan tombol "Tambah ke Keranjang".
+
+Branding tetap mudah dipakai ulang untuk niche lain — ganti konten di halaman **Pengaturan**
+(nama, logo, favicon, banner, kontak) dan sesuaikan `resources/views/home.blade.php` serta
+`resources/views/catalog/`.
 
 ## Stack
 
@@ -64,9 +69,17 @@ Lokal di atas), bukan lewat npm.
 
 ## Admin Panel
 
-`/admin/login` — kelola Produk, Kategori, Pengguna (akun admin), dan Pengaturan (branding,
-banner, WhatsApp, kontak footer). Tidak ada role/level admin — siapa pun yang punya akun
-bisa akses semua menu, termasuk menu Pengguna itu sendiri.
+`/admin/login` — kelola Produk, Kategori, Pesanan, Cabang, Transfer Stok, Pengguna, Laporan,
+Riwayat Transaksi, dan Pengaturan.
+
+Ada **dua peran** (`app/Enums/UserRole.php`): **Pemilik** melihat/mengelola semua; **Staf Cabang**
+dibatasi ke cabangnya sendiri (hanya Pesanan/Transfer Stok/Laporan/Riwayat cabangnya; tidak bisa
+akses Produk/Kategori/Cabang/Pengguna/Pengaturan). Penegakan: middleware `role:` untuk gerbang
+per-rute (owner-only), scope `Order::scopeVisibleTo()` untuk filter daftar per cabang, dan
+`OrderPolicy` untuk otorisasi per-pesanan.
+
+Pembayaran (Midtrans), ongkir otomatis (Biteship), dan proteksi bot (reCAPTCHA v3) dikonfigurasi
+di menu **Pengaturan** — semua kunci rahasia disimpan terenkripsi dan tidak pernah dirender ke HTML.
 
 ## Dokumentasi Lengkap
 

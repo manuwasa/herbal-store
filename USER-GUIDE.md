@@ -145,7 +145,29 @@ muncul, tapi linknya tidak akan valid).
 - **Uji coba tombol WhatsApp** setiap habis mengubah nomor atau template pesan di
   Pengaturan — buka salah satu halaman produk di situs publik dan klik tombolnya,
   pastikan nomor dan isi pesannya sudah benar sebelum dibagikan ke pembeli.
-- Kalau nanti ingin website ini dikembangkan jadi toko online sungguhan (bisa checkout
-  dan bayar langsung di situs, hitung ongkir otomatis), itu proyek pengembangan
-  tersendiri yang butuh developer — lihat `ROADMAP-MARKETPLACE.md` untuk gambaran
-  besarnya.
+- **Uji coba tombol WhatsApp** setiap habis mengubah nomor atau template pesan.
+
+## 7. Fitur Marketplace (Checkout, Pembayaran, Ongkir, Cabang)
+
+Situs kini bisa menerima pesanan & pembayaran langsung, bukan cuma link keluar. Menu-menu baru:
+
+- **Pesanan** — semua order masuk. Klik detail untuk memproses: `Dibayar` → **Proses** →
+  **Tandai Dikirim** (isi kurir + resi) → **Tandai Selesai**. Ada tombol **Batalkan** (kalau
+  sudah dibayar, sistem otomatis coba refund ke Midtrans; kalau metode bayarnya tak bisa
+  refund via API, order tetap dibatalkan dan ditandai "refund gagal" agar Anda refund manual
+  di dashboard Midtrans). Badge angka di menu Pesanan = jumlah pesanan dibayar yang belum diproses.
+- **Cabang** — kelola lokasi/gudang. Tiap cabang punya stok sendiri, nomor WhatsApp sendiri,
+  dan *area asal pengiriman* (untuk hitung ongkir). Saat pembeli checkout, sistem otomatis
+  memilih cabang terdekat yang stoknya cukup.
+- **Transfer Stok** — satu-satunya cara mengubah stok. "Stok Baru" = barang masuk ke sistem;
+  atau pindah antar cabang. Ada tombol input massal (dari halaman Cabang) untuk isi stok awal
+  banyak produk sekaligus.
+- **Laporan** — pendapatan & produk terlaris per rentang tanggal, bisa diekspor CSV.
+- **Riwayat Transaksi** — daftar semua percobaan pembayaran (seperti mutasi rekening).
+
+**Peran pengguna:** akun **Pemilik** melihat semua cabang; akun **Staf Cabang** hanya melihat
+pesanan/stok/laporan cabangnya sendiri dan tidak bisa buka Produk/Kategori/Cabang/Pengguna/Pengaturan.
+
+**Menyalakan checkout:** isi kunci Midtrans/Biteship di **Pengaturan**, isi area asal tiap
+**Cabang**, lalu centang "Aktifkan checkout" — tombol keranjang baru muncul di situs setelah itu.
+Sebelum diaktifkan, situs berperilaku seperti katalog biasa (hanya tombol Shopee/TikTok/WhatsApp).

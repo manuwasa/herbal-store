@@ -27,8 +27,8 @@ class ProductFactory extends Factory
             'slug' => Str::slug($name),
             'description' => fake()->paragraphs(2, true),
             'price' => fake()->numberBetween(15000, 250000),
+            'weight' => fake()->numberBetween(50, 2000), // grams
             'image_path' => null,
-            'stock' => fake()->numberBetween(0, 100),
             'shopee_url' => fake()->boolean(50) ? 'https://shopee.co.id/product/' . fake()->numberBetween(100000, 999999) : null,
             'tiktok_url' => fake()->boolean(40) ? 'https://www.tiktok.com/@tokoherbal/product/' . fake()->numberBetween(100000, 999999) : null,
             'order_now_url' => fake()->boolean(20) ? 'https://tokopedia.com/tokoherbal/' . fake()->slug() : null,

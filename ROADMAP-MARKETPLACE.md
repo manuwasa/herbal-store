@@ -1,5 +1,14 @@
 # Dari Katalog ke Marketplace — Panduan Pengembangan Lanjutan
 
+> **✅ SUDAH DIIMPLEMENTASIKAN (branch `feature/marketplace`).** Tahap 1–3 dari peta jalan
+> ini — cart, checkout tamu, order, pembayaran Midtrans, ongkir otomatis Biteship — plus
+> multi-cabang, stok per-cabang, peran admin (Pemilik/Staf Cabang), dan laporan penjualan
+> **sudah dibangun**. Dokumen ini dipertahankan sebagai catatan desain/riwayat keputusan;
+> untuk cara kerja aktual lihat `DEVELOPER.md`. Yang **belum** dibangun (sengaja ditunda):
+> gateway/kurir kedua (Xendit/Duitku/RajaOngkir — abstraksinya sudah ada), split-fulfillment
+> satu order lintas cabang, booking resi/label otomatis via API kurir, refund parsial, dan
+> multi-vendor (Tahap 4 di bawah).
+
 Dokumen ini untuk **pemilik toko** dan **developer** yang nanti melanjutkan proyek ini,
 kalau suatu saat situs ini mau dikembangkan dari sekadar katalog (link keluar ke
 Shopee/TikTok/WhatsApp) menjadi toko online sungguhan: ada keranjang, checkout,

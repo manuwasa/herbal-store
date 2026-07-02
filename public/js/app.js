@@ -68,6 +68,36 @@ document.addEventListener('DOMContentLoaded', function () {
         updateHeaderState();
     }
 
+    // --- Quantity steppers (cart, product detail) ----------------------------
+    // Buttons submit real forms; JS only disables them at qty/stock boundaries,
+    // the same "disable at boundary" idiom as the slider prev/next below.
+    document.querySelectorAll('[data-quantity-stepper]').forEach(function (stepper) {
+        var input = stepper.querySelector('[data-quantity-input]');
+        var minusBtn = stepper.querySelector('[data-step="-1"]');
+        var plusBtn = stepper.querySelector('[data-step="1"]');
+        var max = parseInt(stepper.getAttribute('data-max-stock'), 10) || 99;
+        if (!input) return;
+
+        function clamp() {
+            var v = parseInt(input.value, 10) || 1;
+            if (v < 1) v = 1;
+            if (v > max) v = max;
+            input.value = v;
+            if (minusBtn) minusBtn.disabled = v <= 1;
+            if (plusBtn) plusBtn.disabled = v >= max;
+        }
+
+        stepper.querySelectorAll('[data-step]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var step = parseInt(btn.getAttribute('data-step'), 10);
+                input.value = (parseInt(input.value, 10) || 1) + step;
+                clamp();
+            });
+        });
+
+        clamp();
+    });
+
     // --- Top Pick slider -----------------------------------------------------
     var slider = document.getElementById('top-pick-slider');
     var prevBtn = document.getElementById('top-pick-prev');

@@ -12,6 +12,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
+
+        $middleware->alias([
+            'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+        ]);
+
+        // Security headers on every response.
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
+        // Payment webhook is server-to-server (signature-verified), not a browser
+        // form — exempt it from CSRF. Scoped to exactly this path, not a wildcard.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/midtrans',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

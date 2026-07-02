@@ -18,6 +18,8 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'password' => Hash::make('password'),
+                'role' => \App\Enums\UserRole::Owner->value,
+                'branch_id' => null,
             ]
         );
     }

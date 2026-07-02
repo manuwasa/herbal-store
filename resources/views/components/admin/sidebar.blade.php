@@ -1,13 +1,33 @@
 @props(['setting'])
 
 @php
+    use App\Enums\UserRole;
+
+    $role = auth()->user()->role;
+    $ownerOnly = [UserRole::Owner];
+
+    // Entries with no 'roles' key are visible to everyone; the controller-level
+    // scope handles data restriction for those (Pesanan/Transfer/Laporan/etc).
     $links = [
         ['route' => 'admin.dashboard', 'pattern' => 'admin.dashboard', 'icon' => 'dashboard', 'label' => 'Dashboard'],
-        ['route' => 'admin.produk.index', 'pattern' => 'admin.produk.*', 'icon' => 'box', 'label' => 'Produk'],
-        ['route' => 'admin.kategori.index', 'pattern' => 'admin.kategori.*', 'icon' => 'tag', 'label' => 'Kategori'],
-        ['route' => 'admin.pengguna.index', 'pattern' => 'admin.pengguna.*', 'icon' => 'users', 'label' => 'Pengguna'],
-        ['route' => 'admin.settings.edit', 'pattern' => 'admin.settings.*', 'icon' => 'settings', 'label' => 'Pengaturan'],
+        ['route' => 'admin.pesanan.index', 'pattern' => 'admin.pesanan.*', 'icon' => 'shopping-bag', 'label' => 'Pesanan'],
+        ['route' => 'admin.produk.index', 'pattern' => 'admin.produk.*', 'icon' => 'box', 'label' => 'Produk', 'roles' => $ownerOnly],
+        ['route' => 'admin.kategori.index', 'pattern' => 'admin.kategori.*', 'icon' => 'tag', 'label' => 'Kategori', 'roles' => $ownerOnly],
+        ['route' => 'admin.transfer-stok.index', 'pattern' => 'admin.transfer-stok.*', 'icon' => 'truck', 'label' => 'Transfer Stok'],
+        ['route' => 'admin.cabang.index', 'pattern' => 'admin.cabang.*', 'icon' => 'map-pin', 'label' => 'Cabang', 'roles' => $ownerOnly],
+        ['route' => 'admin.transactions.index', 'pattern' => 'admin.transactions.*', 'icon' => 'receipt', 'label' => 'Riwayat Transaksi'],
+        ['route' => 'admin.reports.index', 'pattern' => 'admin.reports.*', 'icon' => 'chart', 'label' => 'Laporan'],
+        ['route' => 'admin.pengguna.index', 'pattern' => 'admin.pengguna.*', 'icon' => 'users', 'label' => 'Pengguna', 'roles' => $ownerOnly],
+        ['route' => 'admin.settings.edit', 'pattern' => 'admin.settings.*', 'icon' => 'settings', 'label' => 'Pengaturan', 'roles' => $ownerOnly],
     ];
+
+    $links = array_values(array_filter($links, fn ($link) => ! isset($link['roles']) || in_array($role, $link['roles'], true)));
+
+    // "Paid but not yet processing" = needs attention. Role-scoped automatically.
+    $newOrderCount = \App\Models\Order::query()
+        ->visibleTo(auth()->user())
+        ->where('status', \App\Enums\OrderStatus::Paid)
+        ->count();
 @endphp
 
 <div id="sidebar-backdrop" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
@@ -58,6 +78,11 @@
                       {{ request()->routeIs($link['pattern']) ? 'bg-brand-600 text-white' : 'hover:bg-gray-800 hover:text-white' }}">
                 <x-icon :name="$link['icon']" class="w-5 h-5 shrink-0" />
                 <span class="sidebar-label overflow-hidden">{{ $link['label'] }}</span>
+                @if($link['route'] === 'admin.pesanan.index' && $newOrderCount > 0)
+                    <span class="sidebar-label ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-amber-400 text-amber-950 text-xs font-bold">
+                        {{ $newOrderCount }}
+                    </span>
+                @endif
             </a>
         @endforeach
     </nav>

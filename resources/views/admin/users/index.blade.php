@@ -29,6 +29,8 @@
                     <tr>
                         <th>Nama</th>
                         <th>Email</th>
+                        <th>Peran</th>
+                        <th>Cabang</th>
                         <th class="no-sort">Aksi</th>
                     </tr>
                 </thead>
@@ -37,6 +39,8 @@
                         <tr>
                             <td class="font-medium text-gray-900">{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
+                            <td>{{ $user->role->label() }}</td>
+                            <td>{{ $user->branch?->name ?? '—' }}</td>
                             <td class="whitespace-nowrap">
                                 <a href="{{ route('admin.pengguna.edit', $user) }}" class="icon-btn" title="Edit">
                                     <x-icon name="edit" class="w-4 h-4" />

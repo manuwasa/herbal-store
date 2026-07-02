@@ -9,11 +9,20 @@ melanjutkan, memperbaiki, atau memperluas situs ini. Untuk instalasi awal, lihat
 
 Sebelum menambah kode apa pun, pahami batasan yang **disengaja**, bukan kelalaian:
 
-- **Katalog saja, bukan e-commerce.** Tidak ada cart, checkout, atau tabel `orders`.
-  Setiap produk punya sampai 4 tombol aksi (Shopee/TikTok/Order Now/WhatsApp) yang
-  semuanya mengarahkan pembeli **keluar** dari situs. Kalau tugas Anda adalah menambah
-  fitur checkout/pembayaran, baca `ROADMAP-MARKETPLACE.md` dulu — itu perubahan
-  arsitektur besar, bukan penambahan kecil.
+- **Katalog + marketplace penuh.** Situs punya cart (session-based), checkout tamu (tanpa
+  akun pelanggan), `orders`/`order_items`/`payment_transactions`, pembayaran Midtrans,
+  ongkir Biteship, stok multi-cabang, dan peran admin. Tombol eksternal
+  (Shopee/TikTok/Order Now/WhatsApp) tetap ada berdampingan dengan tombol "Tambah ke
+  Keranjang". **Prinsip desain kunci** yang harus dijaga saat menambah fitur:
+  - Status pesanan hanya berubah lewat metode transisi di `Order` (`markAsPaid()`, dll),
+    yang meng-`forceFill()` (`status`/`branch_id` sengaja **tidak** `$fillable`) dan
+    memvalidasi status asal (`assertFrom()`) — jangan pernah set `status` dari input request.
+  - Pembayaran hanya jadi `paid` lewat webhook Midtrans yang **terverifikasi tanda tangannya**;
+    tidak ada tombol admin "tandai lunas".
+  - Harga ongkir tidak pernah dipercaya dari browser — `CheckoutService` menurunkannya ulang
+    dari baris `shipping_rate_lookups` yang direkam server saat quote.
+  - Kunci rahasia (Midtrans server key, Biteship API key, reCAPTCHA secret) pakai cast
+    `encrypted` di `Setting` dan field form write-only bertopeng — jangan render ke view.
 - **Tidak ada Node.js/npm/Vite di mana pun dalam proyek ini.** CSS dikompilasi lewat
   Tailwind Standalone CLI (binary `bin/tailwindcss.exe`). Binary ini **tidak** disimpan
   di git (ukurannya 90-140MB tergantung platform — GitHub menolak file di atas 100MB),
@@ -24,12 +33,15 @@ Sebelum menambah kode apa pun, pahami batasan yang **disengaja**, bukan kelalaia
 - **Tidak ada aset dari CDN.** jQuery, DataTables, dan font Fraunces semuanya
   di-self-host di `public/vendor/` dan `public/fonts/`. Kalau menambah library baru,
   download filenya dan commit ke repo — jangan `<script src="https://...">`.
-- **Satu role admin, tanpa RBAC.** Tidak ada level admin/staff/superadmin. Siapa pun
-  yang punya akun di tabel `users` bisa akses semua menu `/admin/*`, termasuk menu
-  **Pengguna** yang dipakai untuk menambah/mengubah/menghapus akun admin lain — kalau
-  menambah fitur baru, jangan diam-diam menambahkan konsep role/permission di sini,
-  itu perubahan arsitektur besar (lihat catatan RBAC di `ROADMAP-MARKETPLACE.md` kalau
-  suatu saat benar-benar dibutuhkan).
+- **Dua peran admin (RBAC ringan, hand-rolled).** Kolom `users.role` (enum
+  `App\Enums\UserRole`: `owner`/`branch_staff`) + `users.branch_id` (nullable; wajib untuk
+  staf, null untuk pemilik). **Bukan** paket pihak ketiga (`spatie/laravel-permission`) —
+  kebutuhannya cuma 2 peran statis, konsisten dengan pola "hand-rolled, tanpa paket" di
+  seluruh proyek. Tiga mekanisme penegakan, masing-masing untuk pertanyaan berbeda:
+  middleware `role:owner` (boleh masuk rute ini?), scope lokal `Order::scopeVisibleTo()`
+  (subset baris mana yang tampil?), dan `OrderPolicy` (boleh akses instance pesanan ini?).
+  Guard "tidak bisa hapus pengguna terakhir" sekarang jadi "tidak bisa hapus **Pemilik**
+  terakhir" (risiko lockout sebenarnya = nol pemilik, bukan nol user).
 - **Reusable untuk niche lain.** Tidak ada yang hardcode "herbal" di luar konten —
   semua branding lewat `Setting`. Kalau menambah fitur, jaga agar tetap generik
   (lihat pola `Product`/`Category`/`Setting` yang sudah ada).

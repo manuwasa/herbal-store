@@ -14,8 +14,8 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         Setting::query()->firstOrCreate([], [
-            'whatsapp_number' => '6281234567890',
             'whatsapp_message_template' => 'Halo, saya mau tanya produk {product} ({url})',
+            'whatsapp_order_message_template' => 'Halo, saya mau tanya pesanan saya. Nomor: {order_number}. Status: {status_url}',
             'site_name' => 'Herbal Store',
             'site_tagline' => 'Produk herbal alami untuk keluarga Anda',
             'site_description' => 'Katalog produk herbal alami — jamu, minyak herbal, teh herbal, dan suplemen. Pesan lewat Shopee, TikTok, atau chat admin.',

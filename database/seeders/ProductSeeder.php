@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Branch;
+use App\Models\BranchStock;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
@@ -44,5 +46,19 @@ class ProductSeeder extends Seeder
 
         // Mark a handful more as Top Pick so the homepage slider has enough to scroll.
         Product::query()->inRandomOrder()->take(5)->update(['is_top_pick' => true]);
+
+        // Give every product some stock at the default branch, so the catalog shows
+        // in-stock items and checkout can resolve a fulfilling branch out of the box.
+        // A few are left at 0 so the "Stok Habis" state is still exercised.
+        $branch = Branch::default();
+
+        if ($branch) {
+            Product::query()->each(function (Product $product) use ($branch) {
+                BranchStock::query()->updateOrCreate(
+                    ['branch_id' => $branch->id, 'product_id' => $product->id],
+                    ['stock' => fake()->boolean(85) ? fake()->numberBetween(5, 100) : 0],
+                );
+            });
+        }
     }
 }

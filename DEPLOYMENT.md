@@ -236,6 +236,23 @@ sudo ufw enable
 4. Simpan `.env` production di tempat aman (password manager/vault) — file ini tidak
    pernah ikut ke Git, jadi kalau server hilang/reset, ini satu-satunya salinan
    kredensial database & `APP_KEY` Anda.
+5. **WAJIB untuk marketplace — jalankan queue worker.** Webhook pembayaran Midtrans
+   memproses status pesanan lewat **queued job** (driver `database`). Tanpa worker yang
+   jalan, pesanan yang dibayar **tidak akan pernah** berubah jadi "paid" dan stok tidak
+   berkurang. Jalankan `php artisan queue:work --tries=3` sebagai proses persisten:
+   - VPS: buat service **Supervisor** (atau systemd) yang menjaga `php artisan queue:work`
+     tetap hidup dan auto-restart.
+   - Shared hosting tanpa proses persisten: pakai **cron** tiap menit
+     `php artisan queue:work --stop-when-empty` sebagai gantinya.
+   Jalankan ulang worker (`php artisan queue:restart`) setiap deploy kode baru.
+6. **Konfigurasi gateway di panel admin, bukan `.env`.** Kunci Midtrans (client/server),
+   Biteship API key, dan reCAPTCHA diisi di menu **Pengaturan** (disimpan terenkripsi di DB).
+   Aktifkan "Payment Gateway" dan "Ongkir Otomatis" hanya setelah kunci produksi terisi &
+   teruji di sandbox. Tiap **cabang** juga perlu diisi *area asal pengiriman* (menu Cabang)
+   agar ongkir otomatis akurat — kalau kosong, checkout tetap jalan tapi ongkir "diatur via WhatsApp".
+7. **Timezone & HTTPS.** `config/app.php` sudah di-set `Asia/Jakarta` (memengaruhi batas
+   kedaluwarsa pembayaran 2 jam & batas "hari" di laporan). Pastikan HTTPS aktif dan set
+   `SESSION_SECURE_COOKIE=true` sebelum menerima pembayaran & data pelanggan asli.
 
 ## Update Kode di Kemudian Hari
 

@@ -22,6 +22,18 @@
                class="px-3 py-2 rounded-full transition-colors {{ request()->routeIs('catalog.*') ? 'bg-brand-100 text-brand-800' : 'hover:bg-stone-100 hover:text-brand-800' }}">
                 Katalog
             </a>
+
+            @if($setting->payment_gateway_enabled)
+                <a href="{{ route('cart.index') }}" title="Keranjang"
+                   class="relative px-3 py-2 rounded-full transition-colors {{ request()->routeIs('cart.*') ? 'bg-brand-100 text-brand-800' : 'hover:bg-stone-100 hover:text-brand-800' }}">
+                    <x-icon name="cart" class="w-5 h-5" />
+                    @if(($cartCount ?? 0) > 0)
+                        <span class="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] rounded-full bg-brand-700 text-white text-[10px] font-bold px-1">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </a>
+            @endif
         </nav>
     </div>
 </header>

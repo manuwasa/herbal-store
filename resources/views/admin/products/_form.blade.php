@@ -30,11 +30,23 @@
                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
         </div>
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
-            <input type="number" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" min="0" required
+            <label class="block text-sm font-medium text-gray-700 mb-1">Berat (gram)</label>
+            <input type="number" name="weight" value="{{ old('weight', $product->weight ?? '') }}" min="1" required
                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+            <p class="text-xs text-gray-400 mt-1">Wajib — dipakai untuk hitung ongkir otomatis.</p>
         </div>
     </div>
+
+    @if(!empty($product) && $product->exists)
+        <div class="rounded-lg bg-gray-50 border border-gray-200 px-3 py-2.5 text-sm text-gray-600">
+            <span class="font-medium text-gray-800">Stok saat ini:</span> {{ $product->totalStock() }} unit (semua cabang).
+            Ubah stok lewat menu <a href="{{ route('admin.transfer-stok.index') }}" class="text-brand-700 hover:underline">Transfer Stok</a>.
+        </div>
+    @else
+        <div class="rounded-lg bg-gray-50 border border-gray-200 px-3 py-2.5 text-sm text-gray-600">
+            Stok diatur per cabang lewat menu <span class="font-medium">Transfer Stok</span> setelah produk disimpan.
+        </div>
+    @endif
 
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Gambar Produk</label>
