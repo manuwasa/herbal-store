@@ -46,7 +46,7 @@
                             <td class="font-medium text-gray-900">{{ $product->name }}</td>
                             <td>{{ $product->category->name }}</td>
                             <td>Rp{{ number_format($product->price, 0, ',', '.') }}</td>
-                            <td>{{ $product->stock }}</td>
+                            <td>{{ $product->branch_stocks_sum_stock ?? 0 }}</td>
                             <td>
                                 @if($product->is_active)
                                     <span class="badge badge-active">Aktif</span>

@@ -12,7 +12,7 @@
 <div class="flex flex-wrap gap-2">
     {{-- The site's own checkout — primary CTA, shown only when the store is live and the product is purchasable. --}}
     @if($shopEnabled && $product->isPurchasable())
-        <form method="POST" action="{{ route('cart.store') }}" class="contents">
+        <form method="POST" action="{{ route('cart.store') }}" class="contents" data-add-to-cart-form data-product-name="{{ $product->name }}">
             @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
             <input type="hidden" name="quantity" value="1">

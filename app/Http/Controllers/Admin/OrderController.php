@@ -47,6 +47,15 @@ class OrderController extends Controller
         ]);
     }
 
+    public function invoice(Order $order)
+    {
+        $this->authorize('view', $order);
+
+        return view('admin.orders.invoice', [
+            'order' => $order->load('items', 'branch', 'latestPaymentTransaction'),
+        ]);
+    }
+
     public function update(Request $request, Order $order)
     {
         $this->authorize('update', $order);

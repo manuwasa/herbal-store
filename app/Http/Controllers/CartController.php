@@ -32,12 +32,28 @@ class CartController extends Controller
         $product = Product::query()->findOrFail($data['product_id']);
 
         if (! $product->isPurchasable()) {
-            return back()->withErrors(['cart' => 'Produk ini sedang tidak tersedia.']);
+            $message = 'Produk ini sedang tidak tersedia.';
+
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $message], 422);
+            }
+
+            return back()->withErrors(['cart' => $message]);
         }
 
         $this->cart->add($product, (int) $data['quantity']);
 
-        return redirect()->route('cart.index')->with('status', 'Produk ditambahkan ke keranjang.');
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk ditambahkan ke keranjang.',
+                'cartCount' => $this->cart->count(),
+            ]);
+        }
+
+        // No-JS fallback: stay on the page the buyer was browsing, don't force
+        // navigation to the cart — matches the JS-driven behavior's intent.
+        return back()->with('status', 'Produk ditambahkan ke keranjang.');
     }
 
     public function update(Request $request, Product $product)
@@ -48,12 +64,35 @@ class CartController extends Controller
 
         $this->cart->update($product->id, (int) $data['quantity']);
 
+        if ($request->wantsJson()) {
+            $line = $this->cart->items()->first(fn ($l) => $l->product->id === $product->id);
+
+            return response()->json([
+                'success' => true,
+                'removed' => is_null($line),
+                'quantity' => $line?->quantity ?? 0,
+                'lineTotal' => $line ? (float) $line->lineTotal() : 0,
+                'subtotal' => (float) $this->cart->subtotal(),
+                'cartCount' => $this->cart->count(),
+                'isEmpty' => $this->cart->isEmpty(),
+            ]);
+        }
+
         return redirect()->route('cart.index')->with('status', 'Keranjang diperbarui.');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
         $this->cart->remove($product->id);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'subtotal' => (float) $this->cart->subtotal(),
+                'cartCount' => $this->cart->count(),
+                'isEmpty' => $this->cart->isEmpty(),
+            ]);
+        }
 
         return redirect()->route('cart.index')->with('status', 'Produk dihapus dari keranjang.');
     }

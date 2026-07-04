@@ -1,7 +1,13 @@
 <x-layouts.admin :setting="\App\Models\Setting::current()" title="Detail Pesanan">
-    <a href="{{ route('admin.pesanan.index') }}" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-4">
-        &larr; Kembali ke daftar pesanan
-    </a>
+    <div class="flex items-center justify-between mb-4">
+        <a href="{{ route('admin.pesanan.index') }}" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800">
+            &larr; Kembali ke daftar pesanan
+        </a>
+        <a href="{{ route('admin.pesanan.invoice', $order) }}" target="_blank"
+           class="icon-btn" title="Cetak Invoice">
+            <x-icon name="receipt" class="w-4 h-4" />
+        </a>
+    </div>
 
     @if($errors->any())
         <div class="mb-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
@@ -32,7 +38,16 @@
                     </tbody>
                     <tfoot class="border-t border-gray-200">
                         <tr><td class="py-1.5 text-gray-500">Subtotal</td><td class="py-1.5 text-right">Rp{{ number_format($order->subtotal, 0, ',', '.') }}</td></tr>
-                        <tr><td class="py-1.5 text-gray-500">Ongkir</td><td class="py-1.5 text-right">Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</td></tr>
+                        <tr>
+                            <td class="py-1.5 text-gray-500">Ongkir</td>
+                            <td class="py-1.5 text-right">
+                                @if($order->shipping_cost > 0)
+                                    Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}
+                                @else
+                                    <span class="badge bg-amber-100 text-amber-700">Disepakati via WhatsApp</span>
+                                @endif
+                            </td>
+                        </tr>
                         <tr class="font-bold text-gray-900"><td class="py-1.5">Total</td><td class="py-1.5 text-right">Rp{{ number_format($order->total, 0, ',', '.') }}</td></tr>
                     </tfoot>
                 </table>
@@ -59,7 +74,11 @@
                 @forelse($order->paymentTransactions as $tx)
                     <details class="border-b border-gray-100 py-2">
                         <summary class="cursor-pointer flex items-center justify-between">
-                            <span class="text-gray-700">{{ $tx->gateway }} — {{ $tx->status }} @if($tx->payment_type)({{ $tx->payment_type }})@endif</span>
+                            <span class="text-gray-700 flex items-center gap-2">
+                                {{ $tx->gateway }}
+                                <span class="badge {{ $tx->statusBadgeClass() }}">{{ $tx->statusLabel() }}</span>
+                                @if($tx->payment_type)<span class="text-gray-400">({{ $tx->payment_type }})</span>@endif
+                            </span>
                             <span class="text-gray-400 text-xs">{{ $tx->created_at?->format('d M Y H:i') }}</span>
                         </summary>
                         <pre class="mt-2 bg-gray-50 rounded-lg p-3 text-xs overflow-x-auto text-gray-600">{{ json_encode($tx->raw_payload, JSON_PRETTY_PRINT) }}</pre>

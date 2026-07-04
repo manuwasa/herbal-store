@@ -5,9 +5,17 @@
 
         @include('orders._detail', ['order' => $order])
 
+        <div class="mt-4 text-center">
+            <a href="{{ route('orders.invoice', $order) }}" target="_blank"
+               class="inline-flex items-center justify-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-900">
+                <x-icon name="receipt" class="w-4 h-4" />
+                Lihat Invoice
+            </a>
+        </div>
+
         @php $waUrl = \App\Services\WhatsAppLinkBuilder::forOrderStatus($order); @endphp
         @if($waUrl)
-            <div class="mt-6 text-center">
+            <div class="mt-4 text-center">
                 <a href="{{ $waUrl }}" target="_blank" rel="noopener"
                    class="inline-flex items-center justify-center gap-2 bg-whatsapp text-white font-semibold px-5 py-2.5 rounded-full hover:bg-whatsapp-dark transition-colors">
                     <x-icon name="chat-bubble" class="w-4 h-4" />

@@ -9,13 +9,6 @@
             </div>
         @endif
 
-        @if(session('status'))
-            <div class="mb-4 flex items-center gap-2 rounded-lg bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm">
-                <x-icon name="check-circle" class="w-5 h-5 shrink-0" />
-                {{ session('status') }}
-            </div>
-        @endif
-
         @if($cartItems->isEmpty())
             <div class="text-center py-20 text-stone-400">
                 <x-icon name="cart" class="w-12 h-12 mx-auto mb-3" />
@@ -34,7 +27,7 @@
             <div class="mt-6 bg-white rounded-2xl border border-stone-200 p-5">
                 <div class="flex items-center justify-between text-stone-600">
                     <span>Subtotal</span>
-                    <span class="font-semibold text-stone-900">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
+                    <span class="font-semibold text-stone-900" data-cart-subtotal>Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex items-center justify-between text-stone-500 text-sm mt-2">
                     <span>Ongkos kirim</span>

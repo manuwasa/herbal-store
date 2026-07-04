@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\OrderStatus;
 use App\Exceptions\InvalidOrderTransitionException;
+use App\Services\Invoicing\InvoiceNumberGenerator;
 use App\Services\Payments\PaymentGateway;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -73,6 +74,9 @@ class Order extends Model
             // immediately after create(), not only after a reload — while still
             // keeping status un-mass-assignable from request input.
             $order->status ??= OrderStatus::PendingPayment;
+            // ??= lets OrderSeeder pre-assign a historically-backdated number
+            // (via direct property assignment, not mass assignment) before save().
+            $order->invoice_number ??= app(InvoiceNumberGenerator::class)->generate();
         });
     }
 

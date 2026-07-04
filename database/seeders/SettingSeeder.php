@@ -14,6 +14,13 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         Setting::query()->firstOrCreate([], [
+            // Storefront looks fully live out of the box: catalog + cart +
+            // checkout are all reachable. Actually completing a *new*
+            // payment still needs real Midtrans/Biteship sandbox credentials
+            // filled in via the Pengaturan page — these flags only control
+            // whether the buyer-facing entry points render at all.
+            'payment_gateway_enabled' => true,
+            'shipping_enabled' => true,
             'whatsapp_message_template' => 'Halo, saya mau tanya produk {product} ({url})',
             'whatsapp_order_message_template' => 'Halo, saya mau tanya pesanan saya. Nomor: {order_number}. Status: {status_url}',
             'site_name' => 'Herbal Store',

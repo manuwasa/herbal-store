@@ -18,4 +18,17 @@ class OrderStatusController extends Controller
             'order' => $order->load('items', 'branch'),
         ]);
     }
+
+    /**
+     * Printable invoice — same access rule as show(): possession of the
+     * unguessable public_reference link is the only gate, viewable regardless
+     * of order status.
+     */
+    public function invoice(Order $order)
+    {
+        return view('orders.invoice', [
+            'setting' => Setting::current(),
+            'order' => $order->load('items', 'branch', 'latestPaymentTransaction'),
+        ]);
+    }
 }

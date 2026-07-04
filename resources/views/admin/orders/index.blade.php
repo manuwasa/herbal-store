@@ -58,7 +58,12 @@
                             <td class="font-medium text-gray-900">{{ $order->customer_name }}</td>
                             <td>{{ $order->customer_phone }}</td>
                             <td>{{ $order->branch?->name ?? '—' }}</td>
-                            <td>Rp{{ number_format($order->total, 0, ',', '.') }}</td>
+                            <td>
+                                Rp{{ number_format($order->total, 0, ',', '.') }}
+                                @if($order->shipping_cost <= 0)
+                                    <span class="badge bg-amber-100 text-amber-700 block w-fit mt-1">Ongkir via WA</span>
+                                @endif
+                            </td>
                             <td><span class="badge {{ $order->status->badgeClass() }}">{{ $order->status->label() }}</span></td>
                             <td class="whitespace-nowrap">
                                 <a href="{{ route('admin.pesanan.show', $order) }}" class="icon-btn" title="Detail">

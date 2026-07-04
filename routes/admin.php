@@ -41,6 +41,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Reachable by both roles — data is scoped inside the controllers, not the route.
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan.index');
     Route::get('/pesanan/{order}', [OrderController::class, 'show'])->name('pesanan.show');
+    Route::get('/pesanan/{order}/invoice', [OrderController::class, 'invoice'])->name('pesanan.invoice');
     Route::put('/pesanan/{order}', [OrderController::class, 'update'])->name('pesanan.update');
     Route::put('/pesanan/{order}/cabang', [OrderController::class, 'reassignBranch'])->name('pesanan.reassign-branch');
 

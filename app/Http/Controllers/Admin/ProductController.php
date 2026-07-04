@@ -13,7 +13,7 @@ class ProductController extends Controller
     public function index()
     {
         return view('admin.products.index', [
-            'products' => Product::query()->with('category')->orderBy('name')->get(),
+            'products' => Product::query()->with('category')->withSum('branchStocks', 'stock')->orderBy('name')->get(),
         ]);
     }
 

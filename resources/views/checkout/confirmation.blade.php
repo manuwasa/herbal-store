@@ -14,6 +14,14 @@
 
         @include('orders._detail', ['order' => $order])
 
+        <div class="mt-4 text-center">
+            <a href="{{ route('orders.invoice', $order) }}" target="_blank"
+               class="inline-flex items-center justify-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-900">
+                <x-icon name="receipt" class="w-4 h-4" />
+                Lihat Invoice
+            </a>
+        </div>
+
         @php $waUrl = \App\Services\WhatsAppLinkBuilder::forOrderStatus($order); @endphp
         <div class="mt-6 bg-white rounded-2xl border border-stone-200 p-5 text-center">
             <p class="text-sm text-stone-600 mb-3">Simpan link status pesanan Anda:</p>

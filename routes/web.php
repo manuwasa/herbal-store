@@ -37,6 +37,7 @@ Route::post('/checkout/cek-ongkir', [ShippingRateController::class, 'rates'])
 
 // Durable guest order-status page (unguessable token).
 Route::get('/pesanan/{order:public_reference}', [OrderStatusController::class, 'show'])->name('orders.show');
+Route::get('/pesanan/{order:public_reference}/invoice', [OrderStatusController::class, 'invoice'])->name('orders.invoice');
 
 require __DIR__ . '/admin.php';
 require __DIR__ . '/webhooks.php';
